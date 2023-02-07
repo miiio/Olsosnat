@@ -32,6 +32,7 @@ class SearchType(Enum):
     API = "第三方API请求"
     SLACK = "Slack"
     SYNOLOGY = "Synology Chat"
+    JAVBUS = "javbus"
 
 
 class RmtMode(Enum):

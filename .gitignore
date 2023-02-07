@@ -11,3 +11,8 @@ test.py
 *.ipr
 out/
 gen/
+
+*.db
+
+tasks.json
+.git*

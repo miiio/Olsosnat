@@ -125,13 +125,24 @@ class WebUtils:
         if not keyword:
             return []
         mtype, key_word, season_num, episode_num, _, content = StringUtils.get_keyword_from_string(keyword)
-        if source == "tmdb":
+        use_javbus = False
+        if source == "javbus":
+            use_javbus = True
+        elif source == "tmdb":
             use_douban_titles = False
         elif source == "douban":
             use_douban_titles = True
         else:
             use_douban_titles = Config().get_config("laboratory").get("use_douban_titles")
-        if use_douban_titles:
+
+        if use_javbus:
+            medias = DouBan().search_douban_medias(keyword=key_word,
+                                                   mtype=mtype,
+                                                   season=season_num,
+                                                   episode=episode_num,
+                                                   page=page)
+                                                   
+        elif use_douban_titles:
             medias = DouBan().search_douban_medias(keyword=key_word,
                                                    mtype=mtype,
                                                    season=season_num,
