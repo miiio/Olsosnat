@@ -4,15 +4,15 @@ app:
   # 【日志记录类型】：server、file
   # 如果是使用Docker安装建议设置为file，将日志输出到配置文件目录
   # 如果是使用群晖套件建议配置为 server，可将日志输出到群晖的日志中心便于查看
-  logtype: server
+  logtype: file
   # 【日志文件的路径】：logtype为file时生效
   logpath: /config/logs
   # 【群晖日志中心IP和端口】：logtype为SERVER时生效。端口一般是514，只需要改动IP为群晖的IP，示例：127.0.0.1:514
   logserver: 127.0.0.1:514
   # 【日志级别】：info、debug、error
-  loglevel: debug
+  loglevel: info
   # 【WEB管理界面监听地址】：如需支持ipv6需设置为::，如::无法访问可改为0.0.0.0
-  web_host: 127.0.0.1
+  web_host: '::'
   # 【WEB管理界面端口】：默认3000
   web_port: '3000'
   # 【WEB管理页面登录用户】，默认admin
@@ -31,9 +31,9 @@ app:
   # 【设置代理】，themoviedb、fanart、telegram等将使用代理访问，http和https均需配置，可以是http也可以是socks5，但需要带http或socks5前缀，两项可以配置为一样，留空则不启用
   # 示例：'http://127.0.0.1:7890' 'socks5://127.0.0.1:8018'
   proxies:
-    https:
-    http:
-  domain: https://3000-miiio-nastools-oalta9sux47.ws-us85.gitpod.io/
+    https: socks5://192.168.1.101:7891
+    http: socks5://192.168.1.101:7891
+  domain: http://114.55.168.40:8014/
   # 【UserAgent】：可适当修改，用于PT站签到、豆瓣数据抓取等
   user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
     like Gecko) Chrome/98.0.4758.102 Safari/537.36
@@ -50,7 +50,6 @@ app:
   - update_userrss.sql
   - update_userpris.sql
   tmdb_domain: api.tmdb.org
-  wallpaper: themoviedb
 media:
   # 【媒体库管理软件】：emby、jellyfin、plex，需要在emby或jellyfin或plex区配置详细信息，用于下载检查控重、媒体库展示等，建议配置
   media_server: jellyfin
@@ -306,7 +305,7 @@ security:
 # 【实验室】
   api_key: LwzXdQpwA8HNzpUQ
   synology_webhook_allow_ip:
-    ipv4: 127.0.0.1
+    ipv4: 192.168.1.101
     ipv6: ::/0
 laboratory:
   # 【识别增强】关键字猜想
@@ -318,8 +317,8 @@ laboratory:
   # 【精确搜索使用英文名称】：开启后对于精确搜索场景（远程搜索、订阅搜索等）将会使用英文名检索站点资源以提升匹配度，但对有些站点资源标题全是中文的则需要关闭，否则匹配不到
   search_en_title: false
   subscribe_token: LwzXdQpwA8HNzpUQ
-  search_tmdbweb: true
-  tmdb_proxy: true
+  search_tmdbweb: false
+  tmdb_proxy: false
 test: false
 scraper_nfo:
   movie:
