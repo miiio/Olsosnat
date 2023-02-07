@@ -15,6 +15,7 @@ from app.utils import StringUtils, Torrent
 from app.utils.types import SearchType, IndexerType
 from config import Config
 from web.backend.web_utils import WebUtils
+from app.utils.types import MediaType
 
 SEARCH_MEDIA_CACHE = {}
 SEARCH_MEDIA_TYPE = {}
@@ -59,7 +60,7 @@ def search_medias_for_web(content, ident_flag=True, filters=None, tmdbid=None, m
             if episode_num:
                 media_info.begin_episode = int(episode_num)
 
-        if media_info and media_info.tmdb_info:
+        if media_type != MediaType.JAV and media_info and media_info.tmdb_info:
             # 查询到TMDB信息
             log.info(f"【Web】从TMDB中匹配到{media_info.type.value}：{media_info.get_title_string()}")
             # 查找的季
@@ -133,6 +134,7 @@ def search_medias_for_web(content, ident_flag=True, filters=None, tmdbid=None, m
     media_list = Searcher().search_medias(key_word=first_search_name,
                                           filter_args=filter_args,
                                           match_media=media_info,
+                                          media_type=media_type,
                                           in_from=SearchType.WEB)
     # 使用第二名称重新搜索
     if ident_flag \

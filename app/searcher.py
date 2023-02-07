@@ -35,6 +35,7 @@ class Searcher:
                       key_word: [str, list],
                       filter_args: dict,
                       match_media=None,
+                      media_type=None,
                       in_from: SearchType = None):
         """
         根据关键字调用索引器检查媒体
@@ -51,6 +52,7 @@ class Searcher:
         return self.indexer.search_by_keyword(key_word=key_word,
                                               filter_args=filter_args,
                                               match_media=match_media,
+                                              media_type=media_type,
                                               in_from=in_from)
 
     def search_one_media(self, media_info,

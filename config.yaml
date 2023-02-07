@@ -1,10 +1,11 @@
 # 【配置注意要符合yaml语法，:号后有1个空格，不能使用全角标点符号】
 # 【最新版本已经可以通过WEB页面对所有配置项进行配置，推荐使用WEB页面进行配置】
 app:
+  debug: true
   # 【日志记录类型】：server、file
   # 如果是使用Docker安装建议设置为file，将日志输出到配置文件目录
   # 如果是使用群晖套件建议配置为 server，可将日志输出到群晖的日志中心便于查看
-  logtype: file
+  logtype: console
   # 【日志文件的路径】：logtype为file时生效
   logpath: /config/logs
   # 【群晖日志中心IP和端口】：logtype为SERVER时生效。端口一般是514，只需要改动IP为群晖的IP，示例：127.0.0.1:514
@@ -185,15 +186,7 @@ pt:
 
 # 【配置Jackett检索器】
   indexer_sites:
-  - pttime
-  - pterclub
-  - hdatmos
   - mteam
-  - rarbg
-  - dmhy
-  - acg.rip
-  - thepiratebay
-  - nyaa
 jackett:
   # 【Jackett地址】：Jackett地址和端口，格式：http(s)://IP:PORT
   host: http://192.168.1.101:9117

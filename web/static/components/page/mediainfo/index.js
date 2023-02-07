@@ -33,22 +33,24 @@ export class PageMediainfo extends CustomElement {
           this.media_info = ret.data;
           this.tmdbid = ret.data.tmdbid;
           this.fav = ret.data.fav;
-          // 类似
-          Golbal.get_cache_or_ajax("get_recommend", "sim", { "type": this.media_type, "subtype": "sim", "tmdbid": ret.data.tmdbid, "page": 1},
-            (ret) => {
-              if (ret.code === 0) {
-                this.similar_media = ret.Items;
+          if (this.media_type != 'JAV') {
+            // 类似
+            Golbal.get_cache_or_ajax("get_recommend", "sim", { "type": this.media_type, "subtype": "sim", "tmdbid": ret.data.tmdbid, "page": 1},
+              (ret) => {
+                if (ret.code === 0) {
+                  this.similar_media = ret.Items;
+                }
               }
-            }
-          );
-          // 推荐
-          Golbal.get_cache_or_ajax("get_recommend", "more", { "type": this.media_type, "subtype": "more", "tmdbid": ret.data.tmdbid, "page": 1},
-            (ret) => {
-              if (ret.code === 0) {
-                this.recommend_media = ret.Items;
+            );
+            // 推荐
+            Golbal.get_cache_or_ajax("get_recommend", "more", { "type": this.media_type, "subtype": "more", "tmdbid": ret.data.tmdbid, "page": 1},
+              (ret) => {
+                if (ret.code === 0) {
+                  this.recommend_media = ret.Items;
+                }
               }
-            }
-          );
+            );
+          }
         } else {
           show_fail_modal("未查询到TMDB媒体信息！");
           window.history.go(-1);
@@ -119,7 +121,7 @@ export class PageMediainfo extends CustomElement {
                       <span class="btn btn-primary btn-pill me-1"
                         @click=${(e) => {
                           e.stopPropagation();
-                          media_search(this.tmdbid + "", this.media_info.title, this.media_type);
+                          media_search(this.tmdbid + "", this.media_type=='JAV' ? this.tmdbid : this.media_info.title, this.media_type);
                         }}>
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><circle cx="10" cy="10" r="7"></circle><line x1="21" y1="21" x2="15" y2="15"></line></svg>
                         搜索资源
@@ -155,9 +157,8 @@ export class PageMediainfo extends CustomElement {
         <div class="row">
           <div class="col-lg-8">
             <h2 class="text-muted ms-4 me-2">
-              <small>${this.media_info.overview ?? this._render_placeholder("200px", "", "col-12", 7)}</small>
             </h2>
-            <div class="row mx-2 mt-4">
+            <div class="row mx-2 ${this.media_type=='JAV'?'':'mt-4'}">
               ${this.media_info.crews
               ? this.media_info.crews.map((item, index) => ( html`
                 <div class="col-12 col-md-6 col-lg-4">
@@ -170,6 +171,22 @@ export class PageMediainfo extends CustomElement {
                 </div>
                 `) )
               : nothing }
+
+              <div class="card rounded-3" style="background: none">
+                ${this.media_info.magnets ? this.media_info.magnets.map((item) => ( html`
+                  <div class="card-body p-2">
+                    <div class="d-flex justify-content-between">
+                      <div class="align-self-center" style="min-width:25%;">
+                        <strong>${item['title']}</strong>
+                      </div>
+                      <div class="text-break text-muted" style="text-align:end;">
+                        ${item['link']}
+                      </div>
+                    </div>
+                  </div>
+                  `) ) : nothing}
+              </div>
+
             </div>
           </div>
           <div class="col-lg-4">

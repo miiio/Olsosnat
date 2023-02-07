@@ -117,6 +117,7 @@ class Indexer(object):
                           key_word: [str, list],
                           filter_args: dict,
                           match_media=None,
+                          media_type=None,
                           in_from: SearchType = None):
         """
         根据关键字调用 Index API 检索
@@ -154,6 +155,7 @@ class Indexer(object):
                                    key_word,
                                    filter_args,
                                    match_media,
+                                   media_type,
                                    in_from)
             all_task.append(task)
         ret_array = []

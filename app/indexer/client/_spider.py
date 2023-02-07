@@ -204,6 +204,8 @@ class TorrentSpider(feapder.AirSpider):
                             params.update({
                                 "%s" % cat.get("id"): 1
                             })
+                if (self.mtype == MediaType.JAV or self.mtype == MediaType.JAV.value) and self.domain.find('m-team') != -1:
+                    torrentspath = 'adult.php'
                 searchurl = self.domain + torrentspath + "?" + urlencode(params)
             else:
                 # 变量字典

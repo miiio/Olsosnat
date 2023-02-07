@@ -115,6 +115,7 @@ class BuiltinIndexer(_IIndexClient):
                key_word,
                filter_args: dict,
                match_media,
+               media_type,
                in_from: SearchType):
         """
         根据关键字多线程检索
@@ -157,11 +158,11 @@ class BuiltinIndexer(_IIndexClient):
             elif indexer.parser == "RenderSpider":
                 result_array = RenderSpider().search(keyword=search_word,
                                                      indexer=indexer,
-                                                     mtype=match_media.type if match_media else None)
+                                                     mtype=match_media.type if match_media else media_type)
             else:
                 result_array = self.__spider_search(keyword=search_word,
                                                     indexer=indexer,
-                                                    mtype=match_media.type if match_media else None)
+                                                    mtype=match_media.type if match_media else media_type)
         except Exception as err:
             print(str(err))
         if len(result_array) == 0:

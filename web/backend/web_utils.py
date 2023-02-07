@@ -1,6 +1,6 @@
 import cn2an
 
-from app.media import Media, Bangumi, DouBan
+from app.media import Media, Bangumi, DouBan, Javbus
 from app.media.meta import MetaInfo
 from app.utils import StringUtils, ExceptionUtils, SystemUtils, RequestUtils
 from app.utils.types import MediaType
@@ -67,7 +67,13 @@ class WebUtils:
         if not mediaid:
             return None
         media_info = None
-        if str(mediaid).startswith("DB:"):
+        if mtype == MediaType.JAV:
+            # JAV
+            info = Javbus().get_jav_detail(id=mediaid)
+            if not info:
+                return None
+            return info
+        elif str(mediaid).startswith("DB:"):
             # 豆瓣
             doubanid = mediaid[3:]
             info = DouBan().get_douban_detail(doubanid=doubanid, mtype=mtype)
@@ -136,7 +142,7 @@ class WebUtils:
             use_douban_titles = Config().get_config("laboratory").get("use_douban_titles")
 
         if use_javbus:
-            medias = DouBan().search_douban_medias(keyword=key_word,
+            medias = Javbus().search_jav_medias(keyword=key_word,
                                                    mtype=mtype,
                                                    season=season_num,
                                                    episode=episode_num,

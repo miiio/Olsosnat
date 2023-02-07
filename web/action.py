@@ -435,7 +435,9 @@ class WebAction:
         tmdbid = data.get("tmdbid")
         media_type = data.get("media_type")
         if media_type:
-            if media_type in self._MovieTypes:
+            if media_type == MediaType.JAV.value:
+                media_type = MediaType.JAV
+            elif media_type in self._MovieTypes:
                 media_type = MediaType.MOVIE
             else:
                 media_type = MediaType.TV
@@ -4426,20 +4428,63 @@ class WebAction:
             "type") in self._MovieTypes else MediaType.TV
         if not tmdbid:
             return {"code": 1, "msg": "未指定媒体ID"}
+        MediaHander = Media()
+        #JAV
+        if data.get('type') == MediaType.JAV.value:
+            mtype = MediaType.JAV
+            media_info = WebUtils.get_mediainfo_from_id(
+                mtype=mtype, mediaid=data.get('tmdbid'))
+            if not media_info:
+                return {
+                    "code": 1,
+                    "msg": "无法查询到Jav信息"
+                }
+                
+            # 查询存在及订阅状态
+            fav, rssid = FileTransfer().get_media_exists_flag(mtype=mtype,
+                                                            title=media_info.get('title'),
+                                                            year=media_info.get('date'),
+                                                            mediaid=media_info.get('tmdb_id'))
+            return {
+                "code": 0,
+                "data": {
+                    "tmdbid": media_info.get('id'),
+                    "douban_id": media_info.get('id'),
+                    "background": MediaHander.get_jav_backdrops(media_info),
+                    "image": MediaHander.get_jav_image(media_info.get('img')), #media_info.get('img'),
+                    "vote": 0,
+                    "year": media_info.get('date'),
+                    "title": media_info.get('title'),
+                    "genres": MediaHander.get_jav_tags(tags=media_info.get('tags')),
+                    "overview": "overview",
+                    "runtime": StringUtils.str_timehours(int(media_info.get('videoLength'))),
+                    "fact": MediaHander.get_jav_factinfo(media_info),
+                    "crews": [],#MediaHander.get_tmdb_crews(tmdbinfo=media_info.tmdb_info, nums=6),
+                    "actors": MediaHander.get_jav_cats(media_info),
+                    "link": [],#media_info.get_detail_url(),
+                    "douban_link": [],#media_info.get_douban_detail_url(),
+                    'samples': media_info.get('samples'),
+                    'magnets': media_info.get('magnets'),
+                    "fav": fav,
+                    "rssid": rssid
+                }
+            }
+        
+        
         media_info = WebUtils.get_mediainfo_from_id(
             mtype=mtype, mediaid=tmdbid)
+        
+        # 查询存在及订阅状态
+        fav, rssid = FileTransfer().get_media_exists_flag(mtype=mtype,
+                                                          title=media_info.title,
+                                                          year=media_info.year,
+                                                          mediaid=media_info.tmdb_id)
         # 检查TMDB信息
         if not media_info or not media_info.tmdb_info:
             return {
                 "code": 1,
                 "msg": "无法查询到TMDB信息"
             }
-        # 查询存在及订阅状态
-        fav, rssid = FileTransfer().get_media_exists_flag(mtype=mtype,
-                                                          title=media_info.title,
-                                                          year=media_info.year,
-                                                          mediaid=media_info.tmdb_id)
-        MediaHander = Media()
         return {
             "code": 0,
             "data": {

@@ -2130,3 +2130,58 @@ class Media:
             result.append({"制作公司": production_company})
 
         return result
+    
+    @staticmethod
+    def get_jav_backdrops(info):
+        backdrops = [info.get('img')]
+        # for sample in info.get('samples', []):
+        #     backdrops.append(sample.get('src'))
+        return backdrops
+
+    @staticmethod
+    def get_jav_tags(tags):
+        return ",".join([i.get('tagName') for i in tags])
+    
+    @staticmethod
+    def get_jav_image(img):
+        return img.replace('cover', 'thumb').replace('_b.jpg', '.jpg')
+    
+    @staticmethod
+    def get_jav_factinfo(media_info):
+        """
+        获取JAV发布信息
+        """
+        result = []
+        if media_info['id']:
+            result.append({"识别码": media_info['id']})
+        if media_info['date']:
+            result.append({"发行日期": media_info['date']})
+        if media_info['videoLength']:
+            result.append({"长度": str(media_info['videoLength'])+"分钟"})
+        if media_info['director']:
+            result.append({"导演": media_info['director']['directorName']})
+        if media_info['producer']:
+            result.append({"制作商": media_info['producer']['producerName']})
+        if media_info['publisher']:
+            result.append({"发行商": media_info['publisher']['publisherName']})
+        if media_info['tags']:
+            result.append({"类别": " ".join([i['tagName'] for i in media_info['tags']])})
+        return result
+
+
+    @staticmethod
+    def get_jav_cats(media_info):
+        return [{
+            "id": cast.get("starId"),
+            "gender": '',
+            "known_for_department": '',
+            "name": cast.get("starName"),
+            "original_name": cast.get("starName"),
+            "popularity": '',
+            "image": 'https://www.javbus.com/pics/actress/'+ cast.get('starId') +'_a.jpg',
+            "cast_id": cast.get("id"),
+            "role": '',
+            "credit_id": '',
+            "order": '',
+            "profile": 'https://www.javbus.com/star/' + cast.get('starId')
+        } for cast in media_info['stars'] or []]
