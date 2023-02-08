@@ -420,6 +420,14 @@ def recommend():
 def ranking():
     return render_template("discovery/ranking.html",
                            DiscoveryType="RANKING")
+    
+    
+# JavLib页面
+@App.route('/javlib', methods=['POST', 'GET'])
+@login_required
+def javlib():
+    return render_template("discovery/ranking.html",
+                           DiscoveryType="JAVLIB")
 
 
 # 豆瓣电影

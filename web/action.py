@@ -43,7 +43,7 @@ from app.utils.types import RmtMode, OsType, SearchType, DownloaderType, SyncTyp
 from config import RMT_MEDIAEXT, TMDB_IMAGE_W500_URL, RMT_SUBEXT, Config
 from web.backend.search_torrents import search_medias_for_web, search_media_by_message
 from web.backend.web_utils import WebUtils
-
+from app.media.javlibapi import JavlibWeb
 
 class WebAction:
     dbhelper = None
@@ -2307,6 +2307,21 @@ class WebAction:
             CurrentPage = int(CurrentPage)
 
         res_list = []
+        if Type == 'JAVLIB':
+            def __dict_javlib_info(ret):
+                return [
+                    {'id': res.get('code'), 'orgid':res.get('code'), 'title':res.get('code'), 'type':'JAV', 'media_type': 'JAV', 'year': '', 'vote': 0.0
+                     , 'image': res.get('cover').replace("ThumbError(this, '",'').replace("');",''), 'overview': res.get('title')} 
+                    for res in ret
+                ]
+            if SubType == 'mostwanted':
+                res_list = __dict_javlib_info(JavlibWeb().mostwanted(CurrentPage))
+            if SubType == 'bestrated':
+                res_list = __dict_javlib_info(JavlibWeb().bestrated(CurrentPage))
+            if SubType == 'newrelease':
+                res_list = __dict_javlib_info(JavlibWeb().newrelease(CurrentPage))
+            if SubType == 'newentries':
+                res_list = __dict_javlib_info(JavlibWeb().newentries(CurrentPage))
         if Type in ['MOV', 'TV']:
             if SubType == "hm":
                 # TMDB热门电影

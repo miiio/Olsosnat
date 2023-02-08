@@ -102,6 +102,28 @@ export class PageDiscovery extends CustomElement {
           subtype :"bangumi",
           week :"7",
         },
+      ],
+      "JAVLIB": [
+        {
+          type: "JAVLIB",
+          title:"最想要",
+          subtype :"mostwanted",
+        },
+        {
+          type: "JAVLIB",
+          title:"高评价",
+          subtype :"bestrated",
+        },
+        {
+          type: "JAVLIB",
+          title:"新加入",
+          subtype :"newentries",
+        },
+        {
+          type: "JAVLIB",
+          title:"新发行",
+          subtype :"newrelease",
+        },
       ]
     }
   }
