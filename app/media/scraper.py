@@ -116,7 +116,8 @@ class Scraper:
         uniqueid_imdb = DomUtils.add_node(doc, root, "uniqueid", javbus_info.get('id'))
         uniqueid_imdb.setAttribute("type", "num")
         uniqueid_imdb.setAttribute("default", "true")
-        DomUtils.add_node(doc, root, "directr", javbus_info.get('director').get('directorName'))
+        if javbus_info.get('director'):
+            DomUtils.add_node(doc, root, "directr", javbus_info.get('director').get('directorName'))
         
         # 保存
         self.__save_nfo(doc, os.path.join(out_path, "%s.nfo" % file_name))
