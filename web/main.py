@@ -428,7 +428,39 @@ def ranking():
 def javlib():
     return render_template("discovery/ranking.html",
                            DiscoveryType="JAVLIB")
-
+    
+# javlib-最想要
+@App.route('/javlib_mostwanted', methods=['POST', 'GET'])
+@login_required
+def javlib_mostwanted():
+    return render_template("discovery/recommend.html",
+                           Type="JAVLIB",
+                           SubType="mostwanted",
+                           Title="Javlib(最想要)")
+# javlib-评价最高
+@App.route('/javlib_bestrated', methods=['POST', 'GET'])
+@login_required
+def javlib_bestrated():
+    return render_template("discovery/recommend.html",
+                           Type="JAVLIB",
+                           SubType="bestrated",
+                           Title="Javlib(评价最高)")
+# javlib-新发行
+@App.route('/javlib_newrelease', methods=['POST', 'GET'])
+@login_required
+def javlib_newrelease():
+    return render_template("discovery/recommend.html",
+                           Type="JAVLIB",
+                           SubType="newrelease",
+                           Title="Javlib(新发行)")
+# javlib-新加入
+@App.route('/javlib_newentries', methods=['POST', 'GET'])
+@login_required
+def javlib_newentries():
+    return render_template("discovery/recommend.html",
+                           Type="JAVLIB",
+                           SubType="newentries",
+                           Title="Javlib(新加入)")
 
 # 豆瓣电影
 @App.route('/douban_movie', methods=['POST', 'GET'])
