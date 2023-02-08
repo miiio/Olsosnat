@@ -612,7 +612,7 @@ class FileTransfer:
                     # jav目录名称
                     jav_dir_name = info.get('title')
                     if media.title in jav_dir_name:
-                        jav_dir_name.replace(media.title, "[%s]" % media.title)
+                        jav_dir_name = jav_dir_name.replace(media.title, "[%s]" % media.title)
                     else:
                         jav_dir_name = "[%s] %s" % (media.title,jav_dir_name)
                     # 目标目录
