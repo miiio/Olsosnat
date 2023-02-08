@@ -50,11 +50,6 @@ def MetaInfo(title, subtitle=None, mtype=None):
     return meta_info
 
 def is_jav(title):
-    """
-    判断是否为jav
-    :param name: 名称
-    :return: 不是jav返回None，否则返回番号
-    """
     if not title:
         return None
     title = title.upper().replace("SIS001", "").replace("1080P", "").replace("720P", "").replace("2160P", "")
@@ -63,7 +58,7 @@ def is_jav(title):
     if not t:
         t = re.match(r'1PONDO[\-_]\d{6}[\-_]\d{2,4}', title)
         if t:
-            t = str(t).replace("1PONDO_", "").replace("1PONDO-", "")
+            t = t.group().replace("1PONDO_", "").replace("1PONDO-", "")
     if not t:
         t = re.match(r'HEYZO[\-_]?\d{4}', title)
     
@@ -71,7 +66,7 @@ def is_jav(title):
         # 加勒比
         t = re.match(r'CARIB[\-_]\d{6}[\-_]\d{3}' ,title)
         if t:
-            t = str(t).replace("CARIB-", "").replace("CARIB_", "")
+            t = t.group().replace("CARIB-", "").replace("CARIB_", "")
     if not t:
         # 东京热
         t = re.match(r'N[-_]\d{4}' ,title)
@@ -99,7 +94,7 @@ def is_jav(title):
     if not t:
         t = title
     if t:
-        t = str(t).replace("_", "-")
+        t = t.group().replace("_", "-")
         return t
     return None
 
