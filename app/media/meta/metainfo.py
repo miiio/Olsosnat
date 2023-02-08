@@ -54,45 +54,46 @@ def is_jav(title):
         return None
     if title.endswith('/'):
         title = title[:-1]
-    title = os.path.basename(title)
+    else:
+        title = title[title.rfind('/')+1:]
     title = title.upper().replace("SIS001", "").replace("1080P", "").replace("720P", "").replace("2160P", "")
-    t = re.match(r'T28[\-_]\d{3,4}', title)
+    t = re.search(r'T28[\-_]\d{3,4}', title)
     # 一本道
     if not t:
-        t = re.match(r'1PONDO[\-_]\d{6}[\-_]\d{2,4}', title)
+        t = re.search(r'1PONDO[\-_]\d{6}[\-_]\d{2,4}', title)
         if t:
             t = t.group().replace("1PONDO_", "").replace("1PONDO-", "")
     if not t:
-        t = re.match(r'HEYZO[\-_]?\d{4}', title)
-    
+        t = re.search(r'HEYZO[\-_]?\d{4}', title)
     if not t:
         # 加勒比
-        t = re.match(r'CARIB[\-_]\d{6}[\-_]\d{3}' ,title)
+        t = re.search(r'CARIB[\-_]\d{6}[\-_]\d{3}' ,title)
         if t:
             t = t.group().replace("CARIB-", "").replace("CARIB_", "")
     if not t:
         # 东京热
-        t = re.match(r'N[-_]\d{4}' ,title)
+        t = re.search(r'N[-_]\d{4}' ,title)
     
     if not t:
         # Jukujo-Club | 熟女俱乐部
-        t = re.match(r'JUKUJO[-_]\d{4}' ,title)
+        t = re.search(r'JUKUJO[-_]\d{4}' ,title)
 
     # 通用
     if not t:
-        t = re.match(r'[A-Z]{2,5}[-_]\d{3,5}' ,title)
-    
+        t = re.search(r'S[A-Z]{1,4}[-_]\d{3,5}' ,title)
     if not t:
-        t = re.match(r'\d{6}[\-_]\d{2,4}' ,title)
+        t = re.search(r'[A-Z]{2,5}[-_]\d{3,5}' ,title)
+    if not t:
+        t = re.search(r'\d{6}[\-_]\d{2,4}' ,title)
 
     if not t:
-        t = re.match(r'[A-Z]+\d{3,5}' ,title)
+        t = re.search(r'[A-Z]+\d{3,5}' ,title)
     
     if not t:
-        t = re.match(r'[A-Za-z]+[-_]?\d+' ,title)
+        t = re.search(r'[A-Za-z]+[-_]?\d+' ,title)
     
     if not t:
-        t = re.match(r'\d+[-_]?\d+' ,title)
+        t = re.search(r'\d+[-_]?\d+' ,title)
         
     if not t:
         return None
