@@ -834,7 +834,7 @@ class Media:
                         log.info(f"【Meta】正在识别JAVBUS：{meta_info.title} ...")
                         info = self.__search_jav_by_code(meta_info.title)
                         if info:
-                            log.info("【Meta】%s 识别到 JAV：名称=%s, 发布日期=%s, 演员" % (
+                            log.info("【Meta】%s 识别到 JAV：名称=%s, 发布日期=%s, 演员=%s" % (
                                 meta_info.title,
                                 info.get('title'),
                                 info.get('date'),
