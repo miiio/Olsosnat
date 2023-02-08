@@ -839,7 +839,7 @@ class Media:
                                 info.get('title'),
                                 info.get('date'),
                                 ','.join([star.get('starName','')  for star in info.get('stars',[])])))
-                            meta_info.set_javbus_info(file_media_info)
+                            meta_info.set_javbus_info(info)
                         else:
                             log.warn("【Rmt】%s 未识别出有效信息！" % meta_info.title)
                             continue

@@ -596,60 +596,32 @@ class FileTransfer:
                     reg_path = bluray_disk_dir
                 else:
                     reg_path = file_item
-                # 未识别
-                if not media or not media.tmdb_info or not media.get_title_string():
-                    log.warn("【Rmt】%s 无法识别媒体信息！" % file_name)
-                    success_flag = False
-                    error_message = "无法识别媒体信息"
-                    self.progress.update(ptype="filetransfer", text=error_message)
-                    if udf_flag:
-                        return __finish_transfer(success_flag, error_message)
-                    # 记录未识别
-                    is_need_insert_unknown = self.dbhelper.is_need_insert_transfer_unknown(reg_path)
-                    if is_need_insert_unknown:
-                        self.dbhelper.insert_transfer_unknown(reg_path, target_dir, rmt_mode)
-                        alert_count += 1
-                    failed_count += 1
-                    if error_message not in alert_messages and is_need_insert_unknown:
-                        alert_messages.append(error_message)
-                    # 原样转移过去
-                    if unknown_dir:
-                        log.warn("【Rmt】%s 按原文件名转移到未识别目录：%s" % (file_name, unknown_dir))
-                        self.__transfer_origin_file(file_item=file_item, target_dir=unknown_dir, rmt_mode=rmt_mode)
-                    elif self._unknown_path:
-                        unknown_path = self.__get_best_unknown_path(in_path)
-                        if not unknown_path:
-                            continue
-                        log.warn("【Rmt】%s 按原文件名转移到未识别目录：%s" % (file_name, unknown_path))
-                        self.__transfer_origin_file(file_item=file_item, target_dir=unknown_path, rmt_mode=rmt_mode)
-                    else:
-                        log.error("【Rmt】%s 无法识别媒体信息！" % file_name)
-                    continue
                 # 处理 jav
                 if media and media.type == MediaType.JAV:
-                    jav_path = self._jav_path
+                    jav_path = self._jav_path[0]
                     if not jav_path and not os.path.exists(jav_path):
                         return __finish_transfer(False, "jav目录不存在：%s" % jav_path)
                     # 从javbus查询的数据
-                    info = media.get('javbus_info', None)
+                    info = media.javbus_info
                     if not info:
                         log.error("【Rmt】%s 无法识别媒体信息！" % media.title)
                         continue
-                    
+                    cc = media.note.get('cc', False)
                     # 主演名称
                     stars = ','.join([star.get('starName', '') for star in info.get('stars',[])])
                     # jav目录名称
-                    jav_dir_name = "[%s] %s" % (info.get('id'), info.get('title'))
+                    jav_dir_name = info.get('title')
                     # 目标目录
                     ret_dir_path = os.path.join(jav_path, stars, jav_dir_name)
                 
                     # 创建目录
-                    if not os.path.exits(ret_dir_path):
+                    if not os.path.exists(ret_dir_path):
                         log.info("【Rmt】正在创建目录：%s" % ret_dir_path)
                         os.makedirs(ret_dir_path)
                         
                     file_ext = os.path.splitext(file_item)[-1]
-                    new_file = os.path.join(ret_dir_path, info.get('id') + file_ext)
+                    file_name = info.get('id') + ('-C' if cc else '') 
+                    new_file = os.path.join(ret_dir_path, file_name + file_ext)
                     ret_file_path = new_file
                     file_exist_flag = os.path.exists(new_file)
                     # jav文件未存在
@@ -705,7 +677,36 @@ class FileTransfer:
                                                     scraper_nfo=self._scraper_nfo,
                                                     scraper_pic=self._scraper_pic,
                                                     dir_path=ret_dir_path,
-                                                    file_name=info.get('id'))
+                                                    file_name=file_name)
+                    continue
+                # 未识别
+                if not media or not media.tmdb_info or not media.get_title_string():
+                    log.warn("【Rmt】%s 无法识别媒体信息！" % file_name)
+                    success_flag = False
+                    error_message = "无法识别媒体信息"
+                    self.progress.update(ptype="filetransfer", text=error_message)
+                    if udf_flag:
+                        return __finish_transfer(success_flag, error_message)
+                    # 记录未识别
+                    is_need_insert_unknown = self.dbhelper.is_need_insert_transfer_unknown(reg_path)
+                    if is_need_insert_unknown:
+                        self.dbhelper.insert_transfer_unknown(reg_path, target_dir, rmt_mode)
+                        alert_count += 1
+                    failed_count += 1
+                    if error_message not in alert_messages and is_need_insert_unknown:
+                        alert_messages.append(error_message)
+                    # 原样转移过去
+                    if unknown_dir:
+                        log.warn("【Rmt】%s 按原文件名转移到未识别目录：%s" % (file_name, unknown_dir))
+                        self.__transfer_origin_file(file_item=file_item, target_dir=unknown_dir, rmt_mode=rmt_mode)
+                    elif self._unknown_path:
+                        unknown_path = self.__get_best_unknown_path(in_path)
+                        if not unknown_path:
+                            continue
+                        log.warn("【Rmt】%s 按原文件名转移到未识别目录：%s" % (file_name, unknown_path))
+                        self.__transfer_origin_file(file_item=file_item, target_dir=unknown_path, rmt_mode=rmt_mode)
+                    else:
+                        log.error("【Rmt】%s 无法识别媒体信息！" % file_name)
                     continue
                 # 当前文件大小
                 media.size = os.path.getsize(file_item)

@@ -96,7 +96,7 @@ class Scraper:
         
         DomUtils.add_node(doc, root, "lockdata", 'false')
         DomUtils.add_node(doc, root, "dateadded", time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
-        DomUtils.add_node(doc, root, "title", "%s %s" % (javbus_info.get('id'), javbus_info.get('title')))
+        DomUtils.add_node(doc, root, "title", javbus_info.get('title'))
         DomUtils.add_node(doc, root, "year", javbus_info.get('date','0000')[:4])
         DomUtils.add_node(doc, root, "mpaa", "NC-17")
         DomUtils.add_node(doc, root, "premiered", javbus_info.get('date'))
@@ -347,14 +347,14 @@ class Scraper:
                 if os.path.exists(os.path.join(dir_path, "%s.nfo" % file_name)):
                     return
                 # nfo
-                self.gen_jav_nfo_file(javbus_info=media.get('javbus_info', None), out_path=dir_path, file_name=file_name)
+                self.gen_jav_nfo_file(javbus_info=media.javbus_info, out_path=dir_path, file_name=file_name)
                 # backdrop
-                backdrop_image = media.get('img', None)
+                backdrop_image = media.javbus_info.get('img', None)
                 if backdrop_image:
                     self.__save_image(backdrop_image, dir_path, itype="%s-fanart" % file_name)
                 # poster
                 if backdrop_image:
-                    poster_image = backdrop_image.replace('cover', 'thumb').replace('_b.', '')
+                    poster_image = backdrop_image.replace('cover', 'thumb').replace('_b.', '.')
                     if poster_image:
                         self.__save_image(poster_image, dir_path, itype="%s-poster" % file_name)
             # 电影
