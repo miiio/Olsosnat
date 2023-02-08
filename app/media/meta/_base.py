@@ -86,6 +86,8 @@ class MetaBase(object):
     overview = None
     # TMDB 的其它信息
     tmdb_info = {}
+    # javbus 的其他信息
+    javbus_info = {}
     # 本地状态 1-已订阅 2-已存在
     fav = "0"
     # 站点列表
@@ -479,6 +481,23 @@ class MetaBase(object):
             else:
                 return int(episode) == self.begin_episode
 
+    # 整合JAVBUS识别的信息
+    def set_javbus_info(self, info):
+        if not info:
+            return
+        self.javbus_info = info
+        self.type = MediaType.JAV
+        # 番号
+        self.title = info.get('id')
+        self.imdb_id = self.title
+        self.tmdb_id = self.title
+        self.douban_id = self.title
+        # 标题
+        self.original_title = info.get('title')
+        self.year = info.get('date')
+        self.release_date = info.get('date')
+        self.runtime = info.get('videoLength')
+    
     # 整合TMDB识别的信息
     def set_tmdb_info(self, info):
         if not info:

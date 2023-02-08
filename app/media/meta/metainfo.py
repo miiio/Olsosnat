@@ -5,6 +5,7 @@ import log
 from app.helper import WordsHelper
 from app.media.meta.metaanime import MetaAnime
 from app.media.meta.metavideo import MetaVideo
+from app.media.meta.metajav import MetaJav
 from app.utils.types import MediaType
 from config import RMT_MEDIAEXT
 
@@ -33,7 +34,11 @@ def MetaInfo(title, subtitle=None, mtype=None):
     else:
         fileflag = False
 
-    if mtype == MediaType.ANIME or is_anime(title):
+    if mtype == MediaType.JAV or is_jav(title):
+        fh = is_jav(title)
+        cc = checkChineseCaptions(fh, title)
+        meta_info = MetaJav(title, fh, cc, fileflag)
+    elif mtype == MediaType.ANIME or is_anime(title):
         meta_info = MetaAnime(title, subtitle, fileflag)
     else:
         meta_info = MetaVideo(title, subtitle, fileflag)
@@ -43,6 +48,70 @@ def MetaInfo(title, subtitle=None, mtype=None):
     meta_info.offset_words = used_info.get("offset")
 
     return meta_info
+
+def is_jav(title):
+    """
+    判断是否为jav
+    :param name: 名称
+    :return: 不是jav返回None，否则返回番号
+    """
+    if not title:
+        return None
+    title = title.upper().replace("SIS001", "").replace("1080P", "").replace("720P", "").replace("2160P", "")
+    t = re.match(r'T28[\-_]\d{3,4}', title)
+    # 一本道
+    if not t:
+        t = re.match(r'1PONDO[\-_]\d{6}[\-_]\d{2,4}', title)
+        if t:
+            t = str(t).replace("1PONDO_", "").replace("1PONDO-", "")
+    if not t:
+        t = re.match(r'HEYZO[\-_]?\d{4}', title)
+    
+    if not t:
+        # 加勒比
+        t = re.match(r'CARIB[\-_]\d{6}[\-_]\d{3}' ,title)
+        if t:
+            t = str(t).replace("CARIB-", "").replace("CARIB_", "")
+    if not t:
+        # 东京热
+        t = re.match(r'N[-_]\d{4}' ,title)
+    
+    if not t:
+        # Jukujo-Club | 熟女俱乐部
+        t = re.match(r'JUKUJO[-_]\d{4}' ,title)
+
+    # 通用
+    if not t:
+        t = re.match(r'[A-Z]{2,5}[-_]\d{3,5}' ,title)
+    
+    if not t:
+        t = re.match(r'\d{6}[\-_]\d{2,4}' ,title)
+
+    if not t:
+        t = re.match(r'[A-Z]+\d{3,5}' ,title)
+    
+    if not t:
+        t = re.match(r'[A-Za-z]+[-_]?\d+' ,title)
+    
+    if not t:
+        t = re.match(r'\d+[-_]?\d+' ,title)
+    
+    if not t:
+        t = title
+    if t:
+        t = str(t).replace("_", "-")
+        return t
+    return None
+
+def checkChineseCaptions(fh, title):
+    if not fh or not title:
+        return False
+    if title.find("中文字幕") != -1:
+        return True
+    match = re.match(fh + "[_-]C", title.upper().replace('_','-'))
+    if match:
+        return True
+    return False
 
 
 def is_anime(name):

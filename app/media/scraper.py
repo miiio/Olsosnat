@@ -78,6 +78,48 @@ class Scraper:
             # 评分
             DomUtils.add_node(doc, root, "rating", tmdbinfo.get("vote_average") or "0")
         return doc
+    
+    def gen_jav_nfo_file(self, javbus_info, out_path, file_name):
+        """
+        生成jav的NFO描述文件
+        :param javbus_info: javbus元数据
+        :param out_path: 根目录
+        :param file_name: 文件名，不含后缀
+        """
+        # 开始生成XML
+        if not javbus_info:
+            log.warn("【Scraper】javbus_info缺失，生成NFO文件失败：%s" % file_name)
+            return
+        log.info("【Scraper】正在生成JAV NFO文件：%s" % file_name)
+        doc = minidom.Document()
+        root = DomUtils.add_node(doc, doc, "movie")
+        
+        DomUtils.add_node(doc, root, "lockdata", 'false')
+        DomUtils.add_node(doc, root, "dateadded", time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
+        DomUtils.add_node(doc, root, "title", "%s %s" % (javbus_info.get('id'), javbus_info.get('title')))
+        DomUtils.add_node(doc, root, "year", javbus_info.get('date','0000')[:4])
+        DomUtils.add_node(doc, root, "mpaa", "NC-17")
+        DomUtils.add_node(doc, root, "premiered", javbus_info.get('date'))
+        DomUtils.add_node(doc, root, "releasedate", javbus_info.get('date'))
+        DomUtils.add_node(doc, root, "runtime", javbus_info.get('videoLength'))
+        DomUtils.add_node(doc, root, "country", "日本")
+        for tag in javbus_info.get('tags', []):
+            DomUtils.add_node(doc, root, "genre", tag.get('tagName', '未知'))
+        DomUtils.add_node(doc, root, "numid", javbus_info.get('id'))
+        # DomUtils.add_node(doc, root, "art", javbus_info.get('id'))
+        for actor in javbus_info.get('stars', []):
+            xactor = DomUtils.add_node(doc, root, "actor")
+            DomUtils.add_node(doc, xactor, "name", actor.get("starName") or "")
+            DomUtils.add_node(doc, xactor, "type", "Actor")
+            DomUtils.add_node(doc, xactor, "thumb", "https://www.javbus.com/pics/actress/%s_a.jpg" % actor.get("starName") or "starId")
+            DomUtils.add_node(doc, xactor, "profile", "https://www.javbus.com/star/" + actor.get("starName"))
+        uniqueid_imdb = DomUtils.add_node(doc, root, "uniqueid", javbus_info.get('id'))
+        uniqueid_imdb.setAttribute("type", "num")
+        uniqueid_imdb.setAttribute("default", "true")
+        DomUtils.add_node(doc, root, "directr", javbus_info.get('director').get('directorName'))
+        
+        # 保存
+        self.__save_nfo(doc, os.path.join(out_path, "%s.nfo" % file_name))
 
     def gen_movie_nfo_file(self,
                            tmdbinfo: dict,
@@ -297,8 +339,26 @@ class Scraper:
         if not scraper_pic:
             scraper_pic = {}
         try:
+            # JAV
+            if media.type == MediaType.JAV:
+                # 已存在时不处理
+                if os.path.exists(os.path.join(dir_path, "movie.nfo")):
+                    return
+                if os.path.exists(os.path.join(dir_path, "%s.nfo" % file_name)):
+                    return
+                # nfo
+                self.gen_jav_nfo_file(javbus_info=media.get('javbus_info', None), out_path=dir_path, file_name=file_name)
+                # backdrop
+                backdrop_image = media.get('img', None)
+                if backdrop_image:
+                    self.__save_image(backdrop_image, dir_path, itype="%s-fanart" % file_name)
+                # poster
+                if backdrop_image:
+                    poster_image = backdrop_image.replace('cover', 'thumb').replace('_b.', '')
+                    if poster_image:
+                        self.__save_image(poster_image, dir_path, itype="%s-poster" % file_name)
             # 电影
-            if media.type == MediaType.MOVIE:
+            elif media.type == MediaType.MOVIE:
                 scraper_movie_nfo = scraper_nfo.get("movie")
                 scraper_movie_pic = scraper_pic.get("movie")
                 # 已存在时不处理

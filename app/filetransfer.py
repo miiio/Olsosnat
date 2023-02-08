@@ -43,6 +43,7 @@ class FileTransfer:
     _tv_category_flag = None
     _anime_category_flag = None
     _unknown_path = None
+    _jav_path = None
     _min_filesize = RMT_MIN_FILESIZE
     _filesize_cover = False
     _movie_dir_rmt_format = ""
@@ -114,6 +115,8 @@ class FileTransfer:
                     self._unknown_path = [self._unknown_path]
                 else:
                     self._unknown_path = []
+            # jav目录
+            self._jav_path = media.get('jav_path')
             # 最小文件大小
             min_filesize = media.get('min_filesize')
             if isinstance(min_filesize, int):
@@ -621,6 +624,88 @@ class FileTransfer:
                         self.__transfer_origin_file(file_item=file_item, target_dir=unknown_path, rmt_mode=rmt_mode)
                     else:
                         log.error("【Rmt】%s 无法识别媒体信息！" % file_name)
+                    continue
+                # 处理 jav
+                if media and media.type == MediaType.JAV:
+                    jav_path = self._jav_path
+                    if not jav_path and not os.path.exists(jav_path):
+                        return __finish_transfer(False, "jav目录不存在：%s" % jav_path)
+                    # 从javbus查询的数据
+                    info = media.get('javbus_info', None)
+                    if not info:
+                        log.error("【Rmt】%s 无法识别媒体信息！" % media.title)
+                        continue
+                    
+                    # 主演名称
+                    stars = ','.join([star.get('starName', '') for star in info.get('stars',[])])
+                    # jav目录名称
+                    jav_dir_name = "[%s] %s" % (info.get('id'), info.get('title'))
+                    # 目标目录
+                    ret_dir_path = os.path.join(jav_path, stars, jav_dir_name)
+                
+                    # 创建目录
+                    if not os.path.exits(ret_dir_path):
+                        log.info("【Rmt】正在创建目录：%s" % ret_dir_path)
+                        os.makedirs(ret_dir_path)
+                        
+                    file_ext = os.path.splitext(file_item)[-1]
+                    new_file = os.path.join(ret_dir_path, info.get('id') + file_ext)
+                    ret_file_path = new_file
+                    file_exist_flag = os.path.exists(new_file)
+                    # jav文件未存在
+                    if not file_exist_flag:
+                        ret = self.__transfer_file(file_item=file_item,
+                                                    new_file=new_file,
+                                                    rmt_mode=rmt_mode,
+                                                    over_flag=False)
+                        if ret != 0:
+                            success_flag = False
+                            error_message = "文件转移失败，错误码 %s" % ret
+                            self.progress.update(ptype="filetransfer", text=error_message)
+                            if udf_flag:
+                                return __finish_transfer(success_flag, error_message)
+                            failed_count += 1
+                            alert_count += 1
+                            if error_message not in alert_messages:
+                                alert_messages.append(error_message)
+                            continue
+                    else:
+                        if rmt_mode != RmtMode.SOFTLINK:
+                            if media.size > os.path.getsize(ret_file_path) and self._filesize_cover or udf_flag:
+                                log.info("【Rmt】文件 %s 已存在，覆盖..." % new_file)
+                                ret = self.__transfer_file(file_item=file_item,
+                                                           new_file=new_file,
+                                                           rmt_mode=rmt_mode,
+                                                           over_flag=True)
+                                if ret != 0:
+                                    success_flag = False
+                                    error_message = "文件转移失败，错误码 %s" % ret
+                                    self.progress.update(ptype="filetransfer", text=error_message)
+                                    if udf_flag:
+                                        return __finish_transfer(success_flag, error_message)
+                                    failed_count += 1
+                                    alert_count += 1
+                                    if error_message not in alert_messages:
+                                        alert_messages.append(error_message)
+                                    continue
+                                handler_flag = True
+                            else:
+                                log.warn("【Rmt】文件 %s 已存在" % ret_file_path)
+                                failed_count += 1
+                                continue
+                        else:
+                            log.warn("【Rmt】文件 %s 已存在" % ret_file_path)
+                            failed_count += 1
+                            continue
+                    
+                    # 生成nfo及poster
+                    if self._scraper_flag:
+                        # 生成刮削文件
+                        self.scraper.gen_scraper_files(media=media,
+                                                    scraper_nfo=self._scraper_nfo,
+                                                    scraper_pic=self._scraper_pic,
+                                                    dir_path=ret_dir_path,
+                                                    file_name=info.get('id'))
                     continue
                 # 当前文件大小
                 media.size = os.path.getsize(file_item)

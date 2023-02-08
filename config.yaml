@@ -69,6 +69,8 @@ media:
   # 未识别的记录同时会在媒体整理->手动识别下面出现，unknown_path只是硬链接一份用于备份，同时手工识别处理后程序也不会主动删除，如果不想要多硬链接一份，可以不配置该目录
   unknown_path:
   - /data/pt/hlink/media
+  jav_path:
+  - /data/nas/jav/#整理完成
   # 【二级分类开关】：电影/电视剧/动漫是否需要二级分类，启用二级分类后会在电影/电视剧/动漫目录下按二级分类名建立子目录
   # 此处配置分类的策略名，配置文件目录中需要有与策略名同名的.yaml配置文件
   # 默认策略default-category分类设置可参考"default-category.yaml"，分类参见README.MD说明

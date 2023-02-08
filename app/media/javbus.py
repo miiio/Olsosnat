@@ -23,8 +23,6 @@ class Javbus:
     javbusapi = None
     doubanweb = None
     message = None
-    _movie_num = 20
-    _tv_num = 20
 
     def __init__(self):
         self.init_config()
