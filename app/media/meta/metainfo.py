@@ -46,7 +46,6 @@ def MetaInfo(title, subtitle=None, mtype=None):
     meta_info.ignored_words = used_info.get("ignored")
     meta_info.replaced_words = used_info.get("replaced")
     meta_info.offset_words = used_info.get("offset")
-
     return meta_info
 
 def is_jav(title):
@@ -86,14 +85,14 @@ def is_jav(title):
     if not t:
         t = re.search(r'\d{6}[\-_]\d{2,4}' ,title)
 
-    if not t:
-        t = re.search(r'[A-Z]+\d{3,5}' ,title)
+    # if not t:
+    #     t = re.search(r'[A-Z]+\d{3,5}' ,title)
     
-    if not t:
-        t = re.search(r'[A-Za-z]+[-_]?\d+' ,title)
+    # if not t:
+    #     t = re.search(r'[A-Za-z]+[-_]?\d+' ,title)
     
-    if not t:
-        t = re.search(r'\d+[-_]?\d+' ,title)
+    # if not t:
+    #     t = re.search(r'\d+[-_]?\d+' ,title)
         
     if not t:
         return None
