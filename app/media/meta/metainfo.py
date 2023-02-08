@@ -52,6 +52,9 @@ def MetaInfo(title, subtitle=None, mtype=None):
 def is_jav(title):
     if not title:
         return None
+    if title.endswith('/'):
+        title = title[:-1]
+    title = os.path.basename(title)
     title = title.upper().replace("SIS001", "").replace("1080P", "").replace("720P", "").replace("2160P", "")
     t = re.match(r'T28[\-_]\d{3,4}', title)
     # 一本道
@@ -90,13 +93,12 @@ def is_jav(title):
     
     if not t:
         t = re.match(r'\d+[-_]?\d+' ,title)
-    
+        
     if not t:
-        t = title
-    if t:
+        return None
+    else:
         t = t.group().replace("_", "-")
         return t
-    return None
 
 def checkChineseCaptions(fh, title):
     if not fh or not title:
