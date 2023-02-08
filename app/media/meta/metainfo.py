@@ -78,8 +78,8 @@ def is_jav(title):
         t = re.search(r'JUKUJO[-_]\d{4}' ,title)
 
     # 通用
-    if not t:
-        t = re.search(r'S[A-Z]{1,4}[-_]\d{3,5}' ,title)
+    # if not t:
+    #     t = re.search(r'S[A-Z]{1,4}[-_]\d{3,5}' ,title)
     if not t:
         t = re.search(r'[A-Z]{2,5}[-_]\d{3,5}' ,title)
     if not t:
