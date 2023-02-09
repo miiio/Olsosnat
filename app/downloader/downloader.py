@@ -718,7 +718,7 @@ class Downloader:
 
         # 返回的消息列表
         message_list = []
-        if meta_info.type != MediaType.MOVIE:
+        if meta_info.type != MediaType.JAV and meta_info.type != MediaType.MOVIE:
             # 是否存在的标志
             return_flag = False
             # 检索电视剧的信息

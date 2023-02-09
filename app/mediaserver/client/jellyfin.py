@@ -5,7 +5,7 @@ from config import Config
 from app.mediaserver.client._base import _IMediaClient
 from app.utils.types import MediaServerType
 from app.utils import RequestUtils, SystemUtils, ExceptionUtils
-
+from app.media.meta.metainfo import is_jav
 
 class Jellyfin(_IMediaClient):
     schema = "jellyfin"
@@ -231,6 +231,11 @@ class Jellyfin(_IMediaClient):
                 if res_items:
                     ret_movies = []
                     for res_item in res_items:
+                        # jav只匹配番号
+                        if is_jav(title) and title in res_item.get('Name'):
+                            ret_movies.append(
+                                {'title': res_item.get('Name'), 'year': str(res_item.get('ProductionYear'))})
+                            return ret_movies
                         if res_item.get('Name') == title and (
                                 not year or str(res_item.get('ProductionYear')) == str(year)):
                             ret_movies.append(

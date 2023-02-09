@@ -2,6 +2,7 @@ import cn2an
 
 from app.media import Media, Bangumi, DouBan, Javbus
 from app.media.meta import MetaInfo
+from app.media.meta.metainfo import is_jav
 from app.utils import StringUtils, ExceptionUtils, SystemUtils, RequestUtils
 from app.utils.types import MediaType
 from config import Config
@@ -132,7 +133,7 @@ class WebUtils:
             return []
         mtype, key_word, season_num, episode_num, _, content = StringUtils.get_keyword_from_string(keyword)
         use_javbus = False
-        if source == "javbus":
+        if source == "javbus" or (source is None and is_jav(keyword)):
             use_javbus = True
         elif source == "tmdb":
             use_douban_titles = False
