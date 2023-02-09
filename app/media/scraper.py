@@ -355,7 +355,7 @@ class Scraper:
                     self.__save_image(backdrop_image, dir_path, itype="%s-fanart" % file_name)
                 # poster
                 if backdrop_image:
-                    poster_image = backdrop_image.replace('cover', 'thumb').replace('_b.', '.')
+                    poster_image = media.javbus_info.get('post_img', None)
                     if poster_image:
                         self.__save_image(poster_image, dir_path, itype="%s-poster" % file_name)
             # 电影

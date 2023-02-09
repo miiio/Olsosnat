@@ -70,6 +70,10 @@ class Javbus:
             
             
         jav_info = self.javbusapi.jav_detail(id)
+        
+        jav_info['post_img'] = jav_info.get('img', '')
+        if jav_info.get('img'):
+            jav_info['post_img'] = jav_info.get('img').replace('cover', 'thumb').replace('_b.jpg', '.jpg')
             
         if not jav_info:
             log.warn("【Javbus】%s 未找到Jav详细信息" % id)

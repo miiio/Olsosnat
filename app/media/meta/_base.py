@@ -497,6 +497,12 @@ class MetaBase(object):
         self.year = info.get('date')
         self.release_date = info.get('date')
         self.runtime = info.get('videoLength')
+        
+        # 图片
+        self.poster_path = info.get('post_img')
+        self.backdrop_path = info.get('img')
+        self.fanart_backdrop = info.get('img')
+        self.fanart_poster = info.get('img')
     
     # 整合TMDB识别的信息
     def set_tmdb_info(self, info):

@@ -4466,7 +4466,7 @@ class WebAction:
                     "tmdbid": media_info.get('id'),
                     "douban_id": media_info.get('id'),
                     "background": MediaHander.get_jav_backdrops(media_info),
-                    "image": MediaHander.get_jav_image(media_info.get('img')), #media_info.get('img'),
+                    "image": media_info.get('post_img'), #media_info.get('img'),
                     "vote": 0,
                     "year": media_info.get('date'),
                     "title": media_info.get('title'),

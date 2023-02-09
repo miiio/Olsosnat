@@ -2171,10 +2171,6 @@ class Media:
         return ",".join([i.get('tagName') for i in tags])
     
     @staticmethod
-    def get_jav_image(img):
-        return img.replace('cover', 'thumb').replace('_b.jpg', '.jpg')
-    
-    @staticmethod
     def get_jav_factinfo(media_info):
         """
         获取JAV发布信息
