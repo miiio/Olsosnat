@@ -223,6 +223,9 @@ class Filter:
         :param year_str: 要匹配的年份，为空则不匹配
         :return: 是否命中
         """
+        if media_info.type == MediaType.JAV:
+            # jav不需要匹配 年 季 集
+            return True
         if s_num:
             if not media_info.get_season_list():
                 return False

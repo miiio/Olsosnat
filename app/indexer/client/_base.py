@@ -256,9 +256,15 @@ class _IIndexClient(metaclass=ABCMeta):
                 index_rule_fail += 1
                 continue
             # 识别媒体信息
-            if not match_media or match_media.type == MediaType.JAV:
+            if not match_media:
                 # 不过滤
                 media_info = meta_info
+            elif match_media.type == MediaType.JAV:
+                # jav 只简单的匹配标题
+                if match_media.title not in torrent_name:
+                    log.warn(f"【{self.index_type}】{torrent_name} 识别jav媒体信息出错！")
+                    index_error += 1
+                    continue
             else:
                 # 0-识别并模糊匹配；1-识别并精确匹配
                 if meta_info.imdb_id \
