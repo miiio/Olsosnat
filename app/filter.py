@@ -104,6 +104,9 @@ class Filter:
         # 为-1时不使用过滤规则
         if rulegroup and int(rulegroup) == -1:
             return True, 0, "不过滤"
+        # jav暂时不使用过滤规则
+        if meta_info.type == MediaType.JAV:
+            return True, 0, "不过滤"
         if meta_info.subtitle:
             title = "%s %s" % (meta_info.org_string, meta_info.subtitle)
         else:
