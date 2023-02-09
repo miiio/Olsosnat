@@ -16,3 +16,5 @@ gen/
 
 tasks.json
 .git*
+
+config.yaml

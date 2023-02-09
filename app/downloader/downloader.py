@@ -978,7 +978,7 @@ class Downloader:
         """
         根据媒体信息读取一个下载目录的信息
         """
-        if media and media.tmdb_info:
+        if media and (media.tmdb_info or media.type == MediaType.JAV):
             for attr in self._downloaddir or []:
                 if not attr:
                     continue
