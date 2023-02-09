@@ -45,6 +45,7 @@ from config import RMT_MEDIAEXT, TMDB_IMAGE_W500_URL, RMT_SUBEXT, Config
 from web.backend.search_torrents import search_medias_for_web, search_media_by_message
 from web.backend.web_utils import WebUtils
 from app.media.javlibapi import JavlibWeb
+from app.downloader.client.client115 import Client115
 
 class WebAction:
     dbhelper = None
@@ -127,6 +128,8 @@ class WebAction:
             "start_mediasync": self.__start_mediasync,
             "mediasync_state": self.__mediasync_state,
             "get_tvseason_list": self.__get_tvseason_list,
+            "add_jav_115": self.__add_jav_115,
+            "get_jav_play_115_url": self.__get_jav_play_115_url,
             "get_userrss_task": self.__get_userrss_task,
             "delete_userrss_task": self.__delete_userrss_task,
             "update_userrss_task": self.__update_userrss_task,
@@ -2660,6 +2663,56 @@ class WebAction:
                                         status.get("tv_count"),
                                         status.get("time"))}
 
+
+    @staticmethod
+    def __add_jav_115(data):
+        """
+        添加到115
+        """
+        javbus_info = data.get('javbus_info')
+        if not javbus_info:
+            return {"code": 1, "msg": "获取数据失败"}
+        magnets = javbus_info.get('magnets')
+        
+        magnet = None
+        for m in magnets[::-1]:
+            # 倒着找
+            if not magnet or not magnet.get('hasSubtitle') or m.get('hasSubtitle'):
+                magnet = m
+        
+        if not magnet:
+            return {"code": 1, "msg": "该影片暂无magnets"}
+        magnet = magnet.get('link', None)
+            
+        actor = ",".join([a.get('name', '#') for a in javbus_info.get('actors')])
+        if not actor or len(actor) == 0:
+            actor = 'nas-tools'
+        
+        jav_path = Config().get_config('client115').get("jav_path", '/jav/')
+        target_path = jav_path + actor
+        client115 = Client115()
+        if not client115.is_dir_exists(target_path):
+            ret, pid = client115.get_dir_id(jav_path)
+            if not ret:
+                return {"code": 1, "msg": "添加到115失败, 目录不存在"}
+            if not client115.create_dir(pid, actor):
+                return {"code": 1, "msg": "添加到115失败, 目录不存在"}
+        ret = client115.add_torrent(magnet, target_path)
+        if ret:
+            return {"code": 0, "msg": "成功添加到115，请刷新状态！"}
+        else:
+            return {"code": 1, "msg": "添加到115失败！"}
+    
+    @staticmethod 
+    def __get_jav_play_115_url(data):
+        jav_id = data.get('jav_id')
+        if not jav_id:
+            return {"code": 0, "data": ""}
+        # 查询115状态
+        play_115_url = Client115().get_jav_play_url(jav_id)
+        return {"code": 0, "data": play_115_url if play_115_url else ''}
+        
+        
     @staticmethod
     def __get_tvseason_list(data):
         """
@@ -4478,7 +4531,10 @@ class WebAction:
             fav, rssid = FileTransfer().get_media_exists_flag(mtype=mtype,
                                                             title=media_info.get('title'),
                                                             year=media_info.get('date'),
-                                                            mediaid=media_info.get('tmdb_id'))
+                                                            mediaid=media_info.get('id'))
+            
+            # 查询115状态
+            play_115_url = Client115().get_jav_play_url(media_info.get('id'))
             return {
                 "code": 0,
                 "data": {
@@ -4499,6 +4555,7 @@ class WebAction:
                     "douban_link": [],#media_info.get_douban_detail_url(),
                     'samples': media_info.get('samples'),
                     'magnets': media_info.get('magnets'),
+                    'play_115_url': play_115_url if play_115_url else '',
                     "fav": fav,
                     "rssid": rssid
                 }

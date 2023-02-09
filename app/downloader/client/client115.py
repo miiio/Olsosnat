@@ -139,3 +139,18 @@ class Client115(_IDownloadClient):
         设置速度限制
         """
         pass
+    
+    def get_dir_id(self, tdir):
+        return self.downclient.getdirid(tdir)
+    
+    def is_dir_exists(self, tdir):
+        if tdir == '/':
+            return True
+        ret, tid = self.downclient.getdirid(tdir)
+        return ret and tid != 0
+    
+    def create_dir(self, pid, tdir):
+        return self.downclient.adddir(pid, tdir)
+    
+    def get_jav_play_url(self, code):
+       return self.downclient.searchjav(code)

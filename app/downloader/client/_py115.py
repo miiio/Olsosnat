@@ -3,6 +3,7 @@ import time
 from urllib import parse
 
 import requests
+import re
 
 from app.utils import RequestUtils, ExceptionUtils
 
@@ -11,8 +12,8 @@ class Py115:
     cookie = None
     user_agent = None
     req = None
-    uid = None
-    sign = None
+    uid = ''
+    sign = ''
     err = None
 
     def __init__(self, cookie):
@@ -21,8 +22,8 @@ class Py115:
 
     # 登录
     def login(self):
-        if not self.getuid():
-            return False
+        # if not self.getuid():
+        #     return False
         if not self.getsign():
             return False
         return True
@@ -108,8 +109,8 @@ class Py115:
     def addtask(self, tdir, content):
         try:
             ret, dirid = self.getdirid(tdir)
-            if not ret:
-                return False, ''
+            if not ret or (tdir != '/' and dirid == 0):
+                return False, '115目录不存在'
 
             # 转换为磁力
             if re.match("^https*://", content):
@@ -180,3 +181,43 @@ class Py115:
             ExceptionUtils.exception_traceback(result)
             self.err = "异常错误：{}".format(result)
         return False, '/'
+
+    def adddir(self, pid, cname):
+        try:
+            url = "https://webapi.115.com/files/add"
+            postdata = "pid={}&cname={}".format(pid, cname)
+            p = self.req.post_res(url=url, params=postdata.encode('utf-8'))
+            if p:
+                rootobject = p.json()
+                if not rootobject.get("state"):
+                    self.err = rootobject.get("error_msg")
+                    return False
+                return True
+        except Exception as result:
+            ExceptionUtils.exception_traceback(result)
+            self.err = "异常错误：{}".format(result)
+        return False
+    
+    def searchjav(self, javid):
+        if not javid:
+            return None
+        javid2 = javid.replace('-', "")
+        javid3 = javid.replace('-', "00")
+        javid4 = javid.replace('-', "0")
+        reg = '{}|{}|{}|{}'.format(javid,javid2,javid3,javid4)
+        try:
+            url = "https://webapi.115.com/files/search?search_value={}%20{}%20{}%20{}&format=json".format(javid,javid2,javid3,javid4)
+            p = self.req.get_res(url=url)
+            if p:
+                rootobject = p.json()
+                if not rootobject.get("state"):
+                    self.err = rootobject.get("error_msg")
+                    return None
+                for item in rootobject.get('data', []):
+                    if item.get('play_long') and item.get('n') and re.search(reg.upper(), item.get('n').upper()):
+                        return 'https://v.anxia.com/?pickcode=' + item.get('pc')
+                return None
+        except Exception as result:
+            ExceptionUtils.exception_traceback(result)
+            self.err = "异常错误：{}".format(result)
+        return None

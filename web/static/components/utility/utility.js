@@ -75,6 +75,29 @@ export class Golbal {
     }
   }
 
+  // 添加到115被点击时
+  static lit_add_115_click(javbus_info) {
+    show_ask_modal("是否确定将 " + javbus_info.tmdbid + " 添加到115?", function () {
+      hide_ask_modal();
+      ajax_post("add_jav_115", {javbus_info: javbus_info}, function (ret) {
+        if (ret.code == 0) {
+          show_success_modal(ret.msg)
+        }else {
+          show_fail_modal(ret.msg)
+        }
+      });
+
+    });
+  }
+
+  static update_play_115_url(jav_id, callback) {
+    ajax_post("get_jav_play_115_url", {jav_id: jav_id}, function (ret) {
+      if (callback) {
+        callback(ret);
+      }
+    });
+  }
+
   // 保存额外的页面数据
   static save_page_data(name, value) {
     const extra = window.history.state?.extra ?? {};
@@ -115,7 +138,7 @@ export class Golbal {
     if (extra && func) {
       extra = func(extra);
       Golbal.save_page_data(key, extra);
-      //console.log("更新fav", extra);
+      // console.log("更新fav", extra);
     }
   }
 

@@ -15,6 +15,8 @@ export class PageMediainfo extends CustomElement {
     similar_media: { type: Array },
     // 推荐影片
     recommend_media: { type: Array },
+    // 115的播放链接
+    play_115_url: {},
   };
 
   constructor() {
@@ -23,6 +25,7 @@ export class PageMediainfo extends CustomElement {
     this.similar_media = [];
     this.recommend_media = [];
     this.fav = undefined;
+    this.play_115_url = undefined;
   }
 
   firstUpdated() {
@@ -33,6 +36,9 @@ export class PageMediainfo extends CustomElement {
           this.media_info = ret.data;
           this.tmdbid = ret.data.tmdbid;
           this.fav = ret.data.fav;
+          this.actors = ret.data.actors;
+          this.magnets = ret.data.magnets;
+          this.play_115_url = ret.data.play_115_url;
           if (this.media_type != 'JAV') {
             // 类似
             Golbal.get_cache_or_ajax("get_recommend", "sim", { "type": this.media_type, "subtype": "sim", "tmdbid": ret.data.tmdbid, "page": 1},
@@ -139,7 +145,38 @@ export class PageMediainfo extends CustomElement {
                           <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428m0 0a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" /></svg>
                           添加订阅
                         </span>`
-                      }`
+                      }
+                      ${!this.play_115_url || this.play_115_url == ""
+                      ? html`
+                      <span class="btn btn-primary btn-pill me-1"
+                          @click=${this.add_115}>
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M12 5l0 14"></path>
+                            <path d="M5 12l14 0"></path>
+                          </svg>
+                          添加到115
+                        </span>`
+                      : html`
+                      <span class="btn btn-primary btn-pill me-1"
+                        @click=${this.play_115}>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-player-play" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                          <path d="M7 4v16l13 -8z"></path>
+                        </svg>
+                        115播放
+                      </span>`
+                      }
+                      <span class="btn btn-primary btn-pill me-1"
+                        @click=${this.update_play_115_url}>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                          <path d="M12 5l0 14"></path>
+                          <path d="M5 12l14 0"></path>
+                        </svg>
+                        刷新115
+                      </span>
+                      `
                     : html`
                       <span class="me-1">${this._render_placeholder("100px", "30px")}</span>
                       <span class="me-1">${this._render_placeholder("100px", "30px")}</span>
@@ -315,6 +352,29 @@ export class PageMediainfo extends CustomElement {
       });
   }
 
+  play_115() {
+    window.open(this.play_115_url, '_blank');
+  }
+
+  add_115(e) {
+    e.stopPropagation();
+    Golbal.lit_add_115_click(this.media_info,
+      () => {
+        this.play_115_url = "";
+        this.update_play_115_url();
+      },
+      () => {
+        this.play_115_url = "";
+        this.update_play_115_url();
+      });
+  }
+
+  update_play_115_url() {
+    Golbal.update_play_115_url(this.media_info.tmdbid, (ret) => {
+      console.log(ret);
+      this.play_115_url = ret.data;
+    });
+  }
 
 }
 
