@@ -535,7 +535,7 @@ class Downloader:
 
         # 下载掉所有的电影
         for item in download_list:
-            if item.type == MediaType.MOVIE:
+            if item.type == MediaType.MOVIE or item.type == MediaType.JAV:
                 __download(item)
 
         # 电视剧整季匹配

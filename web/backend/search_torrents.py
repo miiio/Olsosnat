@@ -197,7 +197,7 @@ def search_media_by_message(input_str, in_from: SearchType, user_id, user_name=N
         if not SEARCH_MEDIA_TYPE.get(user_id) \
                 or SEARCH_MEDIA_TYPE.get(user_id) == "SEARCH":
             # 如果是豆瓣数据，需要重新查询TMDB的数据
-            if media_info.douban_id:
+            if media_info.type != MediaType.JAV and media_info.douban_id:
                 _title = media_info.get_title_string()
                 # 先从网页抓取（含TMDBID）
                 doubaninfo = DouBan().get_media_detail_from_web(media_info.douban_id)
