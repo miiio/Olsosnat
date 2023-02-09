@@ -19,6 +19,7 @@ class MetaJav(MetaBase):
         if not fh:
             return
         self.title = fh
+        self.keyword = fh
         self.en_name = fh
         self.cn_name = title
         self.org_string = title
