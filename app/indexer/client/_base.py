@@ -256,7 +256,7 @@ class _IIndexClient(metaclass=ABCMeta):
                 index_rule_fail += 1
                 continue
             # 识别媒体信息
-            if not match_media:
+            if not match_media or match_media.type == MediaType.JAV:
                 # 不过滤
                 media_info = meta_info
             else:
