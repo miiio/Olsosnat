@@ -27,6 +27,8 @@ class DbHelper:
                 mtype = "TV"
             elif media_item.type == MediaType.MOVIE:
                 mtype = "MOV"
+            elif media_item.type == MediaType.JAV:
+                mtype = "JAV"
             else:
                 mtype = "ANI"
             data_list.append(SEARCHRESULTINFO(
