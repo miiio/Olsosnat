@@ -261,6 +261,7 @@ class _IIndexClient(metaclass=ABCMeta):
                 media_info = meta_info
             elif match_media.type == MediaType.JAV:
                 # jav 只简单的匹配标题
+                media_info = meta_info
                 if match_media.title not in torrent_name:
                     log.warn(f"【{self.index_type}】{torrent_name} 识别jav媒体信息出错！")
                     index_error += 1
