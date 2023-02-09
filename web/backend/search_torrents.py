@@ -373,7 +373,7 @@ def search_media_by_message(input_str, in_from: SearchType, user_id, user_name=N
                 if not SEARCH_MEDIA_TYPE.get(user_id) \
                         or SEARCH_MEDIA_TYPE.get(user_id) == "SEARCH":
                     # 如果是豆瓣数据，需要重新查询TMDB的数据
-                    if media_info.douban_id:
+                    if media_info.type != MediaType.JAV and media_info.douban_id:
                         _title = media_info.get_title_string()
                         media_info = Media().get_media_info(title="%s %s" % (media_info.title, media_info.year),
                                                             mtype=media_info.type, strict=True)

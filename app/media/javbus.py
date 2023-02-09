@@ -42,8 +42,7 @@ class Javbus:
         ret_medias = []
         for item_obj in result.get("movies"):
             item = item_obj
-            meta_info = MetaInfo(title=item.get("title"))
-            meta_info.title = item.get("title")
+            meta_info = MetaInfo(title=item.get("id"))
             meta_info.type = MediaType.JAV
             
             meta_info.year = item.get("date")
