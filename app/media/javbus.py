@@ -9,7 +9,7 @@ from app.utils import ExceptionUtils, StringUtils
 
 import log
 from config import Config
-from app.media.javbusapi import JavbusApi
+from app.media.javbusapi import JavbusApi, JavbusWeb
 from app.media.meta import MetaInfo
 from app.utils import RequestUtils
 from app.utils.types import MediaType
@@ -20,15 +20,16 @@ lock = Lock()
 @singleton
 class Javbus:
     cookie = None
-    javbusapi = None
-    doubanweb = None
+    # javbusapi = None
+    javbusweb = None
     message = None
 
     def __init__(self):
         self.init_config()
 
     def init_config(self):
-        self.javbusapi = JavbusApi()
+        # self.javbusapi = JavbusApi()
+        self.javbusweb = JavbusWeb()
 
     def search_jav_medias(self, keyword, mtype: MediaType = None, season=None, episode=None, page=1):
         """
@@ -36,7 +37,7 @@ class Javbus:
         """
         if not keyword:
             return []
-        result = self.javbusapi.search(keyword, page=page)
+        result = self.javbusweb.search(keyword, page=page)
         if not result:
             return []
         ret_medias = []
@@ -57,6 +58,14 @@ class Javbus:
 
         return ret_medias
     
+    
+    def search_jav_actor_medias(self, aid, page=1):
+        if not aid:
+            return []
+        result = self.javbusweb.actor_medias(aid, page=page)
+        return result.get('movies', [])
+        
+    
     def get_jav_detail(self, id, wait=False):
         """
         根据豆瓣ID返回豆瓣详情，带休眠
@@ -69,7 +78,7 @@ class Javbus:
             sleep(time)
             
             
-        jav_info = self.javbusapi.jav_detail(id)
+        jav_info = self.javbusweb.detail(id)
         
         jav_info['post_img'] = jav_info.get('img', '')
         if jav_info.get('img'):

@@ -2168,7 +2168,29 @@ class Media:
         # for sample in info.get('samples', []):
         #     backdrops.append(sample.get('src'))
         return backdrops
-
+    
+    @staticmethod
+    def get_javbus_similar(info):
+        related = info.get('related')
+        if not related:
+            return []
+        return [
+            {
+                "fav": "0",
+                "id": jav.get('id', ''),
+                "image": jav.get('img', ''),
+                "media_type": 'JAV',
+                "orgid": jav.get('id', ''),
+                "overview": jav.get('title', ''),
+                "rssid": "",
+                "title": jav.get('title', ''),
+                "tmdbid": jav.get('id', ''),
+                "type": "JAV",
+                "vote": [],
+                "year": "",
+            }
+            for jav in related
+        ]
     @staticmethod
     def get_jav_tags(tags):
         return ",".join([i.get('tagName') for i in tags])

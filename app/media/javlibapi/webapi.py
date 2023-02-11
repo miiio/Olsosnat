@@ -5,15 +5,16 @@ from lxml import etree
 
 from app.utils import RequestUtils, ExceptionUtils
 from app.utils.commons import singleton
-
+from config import Config
 
 @singleton
 class JavlibWeb(object):
     _session = requests.Session()
 
-    _web_base = "https://www.u65w.com/cn/"
+    _web_base = "https://www.javlibrary.com/cn"
     _page_limit = 50
     _timout = 5
+    _proxies = Config().get_proxies()
 
     _weburls = {
         # 最想要
@@ -47,6 +48,7 @@ class JavlibWeb(object):
         if not req_url:
             return None
         return RequestUtils(session=cls._session,
+                            proxies=cls._proxies,
                             timeout=cls._timout).get(url=req_url % kwargs)
 
     @classmethod

@@ -39,6 +39,9 @@ export class PageMediainfo extends CustomElement {
           this.actors = ret.data.actors;
           this.magnets = ret.data.magnets;
           this.play_115_url = ret.data.play_115_url;
+          if (this.media_type == 'JAV') {
+            this.similar_media = ret.data.similar_media;
+          }
           if (this.media_type != 'JAV') {
             // 类似
             Golbal.get_cache_or_ajax("get_recommend", "sim", { "type": this.media_type, "subtype": "sim", "tmdbid": ret.data.tmdbid, "page": 1},

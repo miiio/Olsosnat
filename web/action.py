@@ -45,6 +45,7 @@ from config import RMT_MEDIAEXT, TMDB_IMAGE_W500_URL, RMT_SUBEXT, Config
 from web.backend.search_torrents import search_medias_for_web, search_media_by_message
 from web.backend.web_utils import WebUtils
 from app.media.javlibapi import JavlibWeb
+from app.media.javbus import Javbus
 from app.downloader.client.client115 import Client115
 
 class WebAction:
@@ -2344,7 +2345,19 @@ class WebAction:
                 res_list = __dict_javlib_info(JavlibWeb().newrelease(CurrentPage))
             if SubType == 'newentries':
                 res_list = __dict_javlib_info(JavlibWeb().newentries(CurrentPage))
-        if Type in ['MOV', 'TV']:
+        elif Type == MediaType.JAV.value:
+            if SubType == "person":
+                # 人物作品
+                def __dict_javbus_info(ret):
+                    return [
+                        {'id': res.get('id'), 'orgid':res.get('id'), 'title':res.get('title'), 'type':'JAV', 'media_type': 'JAV', 'year': res.get('date'), 'vote': 0.0
+                        , 'image': res.get('img'), 'overview': res.get('title')} 
+                        for res in ret
+                    ]
+                page = data.get("page") or 1
+                medias = Javbus().search_jav_actor_medias(aid=data.get("personid"), page=page)
+                res_list =  __dict_javbus_info(medias)
+        elif Type in ['MOV', 'TV']:
             if SubType == "hm":
                 # TMDB热门电影
                 res_list = Media().get_tmdb_hot_movies(CurrentPage)
@@ -4573,7 +4586,8 @@ class WebAction:
                     'magnets': media_info.get('magnets'),
                     'play_115_url': play_115_url if play_115_url else '',
                     "fav": fav,
-                    "rssid": rssid
+                    "rssid": rssid,
+                    "similar_media": MediaHander.get_javbus_similar(media_info),
                 }
             }
         
