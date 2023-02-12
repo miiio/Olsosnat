@@ -15,6 +15,7 @@ class JavlibWeb(object):
     _page_limit = 50
     _timout = 5
     _proxies = Config().get_proxies()
+    _user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36'
 
     _weburls = {
         # 最想要
@@ -49,22 +50,8 @@ class JavlibWeb(object):
             return None
         return RequestUtils(session=cls._session,
                             proxies=cls._proxies,
+                            headers=cls._user_agent,
                             timeout=cls._timout).get(url=req_url % kwargs)
-
-    @classmethod
-    def __invoke_json(cls, url, *kwargs):
-        req_url = cls._jsonurls.get(url)
-        if not req_url:
-            return None
-        req = RequestUtils(session=cls._session,
-                           timeout=cls._timout).get_res(url=req_url % kwargs)
-        return req.json() if req else None
-
-    @staticmethod
-    def __get_json(json):
-        if not json:
-            return None
-        return json.get("subjects")
 
     @classmethod
     def __get_list(cls, url, html):

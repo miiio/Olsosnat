@@ -124,6 +124,24 @@ export class PageDiscovery extends CustomElement {
           title:"新发行",
           subtype :"newrelease",
         },
+      ],
+
+      "MISSAV": [
+        {
+          type: "MISAV",
+          title:"今日热门",
+          subtype :"today",
+        },
+        {
+          type: "MISAV",
+          title:"本周热门",
+          subtype :"week",
+        },
+        {
+          type: "MISAV",
+          title:"本月热门",
+          subtype :"month",
+        },
       ]
     }
   }

@@ -45,6 +45,7 @@ from config import RMT_MEDIAEXT, TMDB_IMAGE_W500_URL, RMT_SUBEXT, Config
 from web.backend.search_torrents import search_medias_for_web, search_media_by_message
 from web.backend.web_utils import WebUtils
 from app.media.javlibapi import JavlibWeb
+from app.media.missavapi import MissavWeb
 from app.media.javbus import Javbus
 from app.downloader.client.client115 import Client115
 
@@ -2329,14 +2330,14 @@ class WebAction:
         else:
             CurrentPage = int(CurrentPage)
 
+        def __dict_javlib_info(ret):
+            return [
+                {'id': res.get('code'), 'orgid':res.get('code'), 'title':res.get('code'), 'type':'JAV', 'media_type': 'JAV', 'year': '', 'vote': 0.0
+                    , 'image': res.get('cover').replace("ThumbError(this, '",'').replace("');",''), 'overview': res.get('title')} 
+                for res in ret
+            ]
         res_list = []
         if Type == 'JAVLIB':
-            def __dict_javlib_info(ret):
-                return [
-                    {'id': res.get('code'), 'orgid':res.get('code'), 'title':res.get('code'), 'type':'JAV', 'media_type': 'JAV', 'year': '', 'vote': 0.0
-                     , 'image': res.get('cover').replace("ThumbError(this, '",'').replace("');",''), 'overview': res.get('title')} 
-                    for res in ret
-                ]
             if SubType == 'mostwanted':
                 res_list = __dict_javlib_info(JavlibWeb().mostwanted(CurrentPage))
             if SubType == 'bestrated':
@@ -2345,6 +2346,9 @@ class WebAction:
                 res_list = __dict_javlib_info(JavlibWeb().newrelease(CurrentPage))
             if SubType == 'newentries':
                 res_list = __dict_javlib_info(JavlibWeb().newentries(CurrentPage))
+        elif Type == 'MISSAV':
+            if SubType in ['today', 'week', 'month']:
+                res_list = __dict_javlib_info(MissavWeb().hot(SubType, page=CurrentPage))
         elif Type == MediaType.JAV.value:
             if SubType == "person":
                 # 人物作品

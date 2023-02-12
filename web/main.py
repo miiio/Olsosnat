@@ -423,6 +423,13 @@ def ranking():
                            DiscoveryType="RANKING")
     
     
+# MISSAV页面
+@App.route('/MISSAV', methods=['POST', 'GET'])
+@login_required
+def missav():
+    return render_template("discovery/ranking.html",
+                           DiscoveryType="MISSAV")
+    
 # JavLib页面
 @App.route('/javlib', methods=['POST', 'GET'])
 @login_required
