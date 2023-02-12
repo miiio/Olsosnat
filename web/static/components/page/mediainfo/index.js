@@ -356,7 +356,8 @@ export class PageMediainfo extends CustomElement {
   }
 
   play_115() {
-    window.open(this.play_115_url, '_blank');
+    // window.open(this.play_115_url, '_blank');
+    window.open(this.play_115_url.replace('https://v.anxia.com/?pickcode=',''), '_blank');
   }
 
   add_115(e) {

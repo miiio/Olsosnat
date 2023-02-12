@@ -154,3 +154,6 @@ class Client115(_IDownloadClient):
     
     def get_jav_play_url(self, code):
        return self.downclient.searchjav(code)
+
+    def get_m3u8(self, pid):
+       return self.downclient.getm3u8(pid)

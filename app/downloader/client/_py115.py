@@ -198,6 +198,35 @@ class Py115:
             self.err = "异常错误：{}".format(result)
         return False
     
+    def getm3u8(self, pid):
+        if pid.startswith('https://v.anxia.com/?pickcode='):
+            pid = pid[30:]
+        try:
+            url = "https://115.com/api/video/m3u8/" + pid + ".m3u8"
+            p = self.req.get_res(url=url).text
+            if p:
+                # #EXTM3U
+                # #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=3000000,RESOLUTION=1920x1080,NAME="UD"
+                # http://cpats01.115.com/3bb1095f4b8bdfceeb0badfab4de1a04/63E8E052/E7C7E8A0389912E4520193142C3FA1A86A98D7AC/E7C7E8A0389912E4520193142C3FA1A86A98D7AC_1920.m3u8?u=594084887&t=d1d984a902535d4e024a3ce51f512a77&s=157286400
+                # #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=1800000,RESOLUTION=1280x720,NAME="HD"
+                # http://cpats01.115.com/89ef0b182759a4e01cb0ac35a1b2659c/63E8E052/E7C7E8A0389912E4520193142C3FA1A86A98D7AC/E7C7E8A0389912E4520193142C3FA1A86A98D7AC_1280.m3u8?u=594084887&t=d1d984a902535d4e024a3ce51f512a77&s=104857600
+                dataList = p.split('\n')
+                m3u8 = []
+                temp = '"YH"|原画|"BD"|4K|"UD"|蓝光|"HD"|超清|"SD"|高清|"3G"|标清'
+                txt = temp.split('|')
+                for i in range(6):
+                    for j,e in enumerate(dataList):
+                        if e.find(txt[i*2]) != -1:
+                            m3u8.append({'name': txt[i*2+1], 'url': dataList[j+1].replace('\r', ''), 'type': 'hls'})
+                            
+                return True, m3u8
+            else:
+                return False, "播放失败，视频未转码！"
+        except Exception as result:
+            ExceptionUtils.exception_traceback(result)
+            self.err = "异常错误：{}".format(result)
+        return False, self.err
+    
     def searchjav(self, javid):
         if not javid:
             return None
