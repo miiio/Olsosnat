@@ -680,7 +680,8 @@ class FileTransfer:
                                                     scraper_nfo=self._scraper_nfo,
                                                     scraper_pic=self._scraper_pic,
                                                     dir_path=ret_dir_path,
-                                                    file_name=file_name)
+                                                    file_name=file_name,
+                                                    file_ext=file_ext)
                     continue
                 # 未识别
                 if not media or not media.tmdb_info or not media.get_title_string():
