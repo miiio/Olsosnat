@@ -357,7 +357,7 @@ export class PageMediainfo extends CustomElement {
 
   play_115() {
     // window.open(this.play_115_url, '_blank');
-    window.open(this.play_115_url.replace('https://v.anxia.com/?pickcode=',''), '_blank');
+    window.open(this.play_115_url.replace('https://v.anxia.com/?pickcode=','https://115.com/web/lixian/?pid='), '_blank');
   }
 
   add_115(e) {
