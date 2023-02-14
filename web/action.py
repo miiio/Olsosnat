@@ -2333,7 +2333,7 @@ class WebAction:
         def __dict_javlib_info(ret):
             return [
                 {'id': res.get('code'), 'orgid':res.get('code'), 'title':res.get('code'), 'type':'JAV', 'media_type': 'JAV', 'year': '', 'vote': 0.0
-                    , 'image': res.get('cover').replace("ThumbError(this, '",'').replace("');",''), 'overview': res.get('title')} 
+                    , 'image': res.get('cover'), 'overview': res.get('title')} 
                 for res in ret
             ]
         res_list = []
@@ -4575,7 +4575,9 @@ class WebAction:
                     "douban_id": media_info.get('id'),
                     "background": MediaHander.get_jav_backdrops(media_info),
                     "image": media_info.get('post_img'), #media_info.get('img'),
-                    "vote": 0,
+                    "vote": media_info.get('rating', 0),
+                    "rating": media_info.get('rating', 0),
+                    "javlib_id": media_info.get('javlib_id', ''),
                     "year": media_info.get('date'),
                     "title": media_info.get('title'),
                     "genres": MediaHander.get_jav_tags(tags=media_info.get('tags')),
@@ -4584,8 +4586,8 @@ class WebAction:
                     "fact": MediaHander.get_jav_factinfo(media_info),
                     "crews": [],#MediaHander.get_tmdb_crews(tmdbinfo=media_info.tmdb_info, nums=6),
                     "actors": MediaHander.get_jav_cats(media_info),
-                    "link": [],#media_info.get_detail_url(),
-                    "douban_link": [],#media_info.get_douban_detail_url(),
+                    "link": "https://www.javlibrary.com/cn/?v=%s" % media_info.get('javlib_id', ''),#media_info.get_detail_url(),
+                    "douban_link": "https://www.javbus.com/%s" % media_info.get('id'),#media_info.get_douban_detail_url(),
                     'samples': media_info.get('samples'),
                     'magnets': media_info.get('magnets'),
                     'play_115_url': play_115_url if play_115_url else '',

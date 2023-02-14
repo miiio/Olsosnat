@@ -250,6 +250,7 @@ class JavbusWeb(object):
         """
         doc = cls.__invoke_web("detail", params=(id))
         info = cls.__get_obj("detail_info", doc)
+        info['score'] = 0.0
         info['director'] = cls.__get_obj("directorInfo", doc)
         info['producer'] = cls.__get_obj("producerInfo", doc)
         info['publisher'] = cls.__get_obj("publisherInfo", doc)

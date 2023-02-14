@@ -62,7 +62,7 @@ class MissavWeb(object):
             log.error("【MISSAV】未找到浏览器内核")
             return []
         # 访问页面
-        if not chrome.visit(url):
+        if not chrome.visit(url, ua=cls._ua):
             log.error("【MISSAV】无法连接missav.com！")
             return []
         # 源码

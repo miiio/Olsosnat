@@ -10,6 +10,7 @@ from app.utils import ExceptionUtils, StringUtils
 import log
 from config import Config
 from app.media.javbusapi import JavbusApi, JavbusWeb
+from app.media.javlibapi import JavlibWeb
 from app.media.meta import MetaInfo
 from app.utils import RequestUtils
 from app.utils.types import MediaType
@@ -22,6 +23,7 @@ class Javbus:
     cookie = None
     # javbusapi = None
     javbusweb = None
+    javlibweb = None
     message = None
 
     def __init__(self):
@@ -30,6 +32,7 @@ class Javbus:
     def init_config(self):
         # self.javbusapi = JavbusApi()
         self.javbusweb = JavbusWeb()
+        self.javlibweb = JavlibWeb()
 
     def search_jav_medias(self, keyword, mtype: MediaType = None, season=None, episode=None, page=1):
         """
@@ -68,7 +71,7 @@ class Javbus:
     
     def get_jav_detail(self, id, wait=False):
         """
-        根据豆瓣ID返回豆瓣详情，带休眠
+        根据jav ID返回jav详情，带休眠
         """
         log.info("【Javbus】正在通过Javbus API查询Jav详情：%s" % id)
         # 随机休眠
@@ -91,6 +94,18 @@ class Javbus:
             log.warn("【Javbus】%s 未找到Jav详细信息" % id)
             return None
         log.info("【Javbus】查询到数据：%s" % jav_info.get("title"))
+        
+        
+        # 去javlib获取评分
+        log.info("【Javlib】正在通过Javlib API查询Jav详情(获取评分)：%s" % id)
+        javlib_info = self.javlibweb.detail_by_javid(id)
+        if javlib_info:
+            log.info("【Javlib】查询到数据：%s, 评分：%s" % (javlib_info.get("id"), str(javlib_info.get('rating'))))
+            jav_info['rating'] = javlib_info.get('rating')
+            jav_info['javlib_id'] = javlib_info.get('vid')
+        else:
+            jav_info['rating'] = 0.0
+            jav_info['javlib_id'] = ''
         return jav_info
 
     @staticmethod

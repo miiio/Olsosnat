@@ -104,6 +104,7 @@ class Scraper:
         DomUtils.add_node(doc, root, "releasedate", javbus_info.get('date'))
         DomUtils.add_node(doc, root, "runtime", javbus_info.get('videoLength'))
         DomUtils.add_node(doc, root, "country", "日本")
+        DomUtils.add_node(doc, root, "rating", javbus_info.get('rating', 0.0))
         for tag in javbus_info.get('tags', []):
             DomUtils.add_node(doc, root, "genre", tag.get('tagName', '未知'))
         DomUtils.add_node(doc, root, "numid", javbus_info.get('id'))
