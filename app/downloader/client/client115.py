@@ -157,3 +157,6 @@ class Client115(_IDownloadClient):
 
     def get_m3u8(self, pid):
        return self.downclient.getm3u8(pid)
+   
+    def task_lists(self, page=1):
+        return self.downclient.task_lists(page=page)

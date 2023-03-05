@@ -9,7 +9,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import log
 from app.doubansync import DoubanSync
 from app.downloader import Downloader
-from app.helper import MetaHelper
+from app.helper import MetaHelper, JavMetaHelper
 from app.mediaserver import MediaServer
 from app.rss import Rss
 from app.sites import Sites
@@ -176,6 +176,7 @@ class Scheduler:
 
         # 元数据定时保存
         self.SCHEDULER.add_job(MetaHelper().save_meta_data, 'interval', seconds=METAINFO_SAVE_INTERVAL)
+        self.SCHEDULER.add_job(JavMetaHelper().save_meta_data, 'interval', seconds=METAINFO_SAVE_INTERVAL)
 
         # 定时把队列中的监控文件转移走
         self.SCHEDULER.add_job(Sync().transfer_mon_files, 'interval', seconds=SYNC_TRANSFER_INTERVAL)

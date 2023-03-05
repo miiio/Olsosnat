@@ -14,6 +14,7 @@ from app.media.javlibapi import JavlibWeb
 from app.media.meta import MetaInfo
 from app.utils import RequestUtils
 from app.utils.types import MediaType
+from app.helper import JavMetaHelper
 
 lock = Lock()
 
@@ -25,6 +26,7 @@ class Javbus:
     javbusweb = None
     javlibweb = None
     message = None
+    metaHelper = None
 
     def __init__(self):
         self.init_config()
@@ -33,6 +35,28 @@ class Javbus:
         # self.javbusapi = JavbusApi()
         self.javbusweb = JavbusWeb()
         self.javlibweb = JavlibWeb()
+        self.metaHelper = JavMetaHelper()
+        
+    def search_jav_medias_by_ids(self, ids, mtype: MediaType = None, season=None, episode=None, page=1):
+        """
+        根据关键字搜索豆瓣，返回可能的标题和年份信息
+        """
+        if not ids:
+            return []
+        ret_medias = []
+        save_flag = False
+        for id in ids: 
+            item = self.metaHelper.get_meta_data_by_key(id)
+            if not item:
+                item = self.get_jav_detail(id, wait=True)
+                save_flag
+            
+            if item not in ret_medias:
+                item['img'] = item['post_img']
+                ret_medias.append(item)
+        if save_flag:
+            self.metaHelper.save_meta_data(True)
+        return ret_medias
 
     def search_jav_medias(self, keyword, mtype: MediaType = None, season=None, episode=None, page=1):
         """
@@ -76,7 +100,7 @@ class Javbus:
         log.info("【Javbus】正在通过Javbus API查询Jav详情：%s" % id)
         # 随机休眠
         if wait:
-            time = round(random.uniform(1, 5), 1)
+            time = round(random.uniform(1, 3), 1)
             log.info("【Javbus】随机休眠：%s 秒" % time)
             sleep(time)
             
@@ -106,6 +130,10 @@ class Javbus:
         else:
             jav_info['rating'] = 0.0
             jav_info['javlib_id'] = ''
+            
+        self.metaHelper.update_meta_data({
+            id.lower() : jav_info
+        })
         return jav_info
 
     @staticmethod

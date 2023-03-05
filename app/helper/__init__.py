@@ -1,6 +1,7 @@
 from .chrome_helper import ChromeHelper
 from .indexer_helper import IndexerHelper, IndexerConf
 from .meta_helper import MetaHelper
+from .jav_meta_helper import JavMetaHelper
 from .progress_helper import ProgressHelper
 from .security_helper import SecurityHelper
 from .thread_helper import ThreadHelper

@@ -6,7 +6,7 @@ import requests
 import re
 
 from app.utils import RequestUtils, ExceptionUtils
-
+from app.media.meta.metainfo import is_jav
 
 class Py115:
     cookie = None
@@ -250,3 +250,26 @@ class Py115:
             ExceptionUtils.exception_traceback(result)
             self.err = "异常错误：{}".format(result)
         return None
+    
+    def task_lists(self, page=1):
+        try:
+            url = "https://115.com/web/lixian/?ct=lixian&ac=task_lists&page={}".format(page)
+            p = self.req.get_res(url=url)
+            if p:
+                rootobject = p.json()
+                if not rootobject.get("state"):
+                    self.err = rootobject.get("error_msg")
+                    return None
+                ret = []
+                for item in rootobject.get('tasks', []):
+                    jav = is_jav(item.get('name', ''))
+                    if not jav:
+                        continue
+                    jav = jav.replace("-c", "").replace("-C", "")
+                    ret.append(jav)
+                return ret
+        except Exception as result:
+            ExceptionUtils.exception_traceback(result)
+            self.err = "异常错误：{}".format(result)
+        return None
+        

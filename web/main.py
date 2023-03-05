@@ -469,6 +469,14 @@ def javlib_newentries():
                            Type="JAVLIB",
                            SubType="newentries",
                            Title="Javlib(新加入)")
+# 115记录
+@App.route('/record_115', methods=['POST', 'GET'])
+@login_required
+def record_115():
+    return render_template("discovery/recommend.html",
+                           Type="JAVLIB",
+                           SubType="record_115",
+                           Title="115记录")
 
 # 豆瓣电影
 @App.route('/douban_movie', methods=['POST', 'GET'])

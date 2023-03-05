@@ -2336,6 +2336,12 @@ class WebAction:
                     , 'image': res.get('cover'), 'overview': res.get('title')} 
                 for res in ret
             ]
+        def __dict_javbus_info(ret):
+                return [
+                    {'id': res.get('id'), 'orgid':res.get('id'), 'title':res.get('title'), 'type':'JAV', 'media_type': 'JAV', 'year': res.get('date'), 'vote': 0.0
+                    , 'image': res.get('img'), 'overview': res.get('title')} 
+                    for res in ret
+                ]
         res_list = []
         if Type == 'JAVLIB':
             if SubType == 'mostwanted':
@@ -2346,18 +2352,19 @@ class WebAction:
                 res_list = __dict_javlib_info(JavlibWeb().newrelease(CurrentPage))
             if SubType == 'newentries':
                 res_list = __dict_javlib_info(JavlibWeb().newentries(CurrentPage))
+            if SubType == 'record_115':
+                # 115记录
+                page = data.get("page") or 1
+                client115 = Client115()
+                ids = client115.task_lists(page=page)
+                medias = Javbus().search_jav_medias_by_ids(ids=ids, page=page)
+                res_list =  __dict_javbus_info(medias)
         elif Type == 'MISSAV':
             if SubType in ['today', 'week', 'month']:
                 res_list = __dict_javlib_info(MissavWeb().hot(SubType, page=CurrentPage))
         elif Type == MediaType.JAV.value:
             if SubType == "person":
                 # 人物作品
-                def __dict_javbus_info(ret):
-                    return [
-                        {'id': res.get('id'), 'orgid':res.get('id'), 'title':res.get('title'), 'type':'JAV', 'media_type': 'JAV', 'year': res.get('date'), 'vote': 0.0
-                        , 'image': res.get('img'), 'overview': res.get('title')} 
-                        for res in ret
-                    ]
                 page = data.get("page") or 1
                 medias = Javbus().search_jav_actor_medias(aid=data.get("personid"), page=page)
                 res_list =  __dict_javbus_info(medias)
