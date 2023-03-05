@@ -49,7 +49,7 @@ class Javbus:
             item = self.metaHelper.get_meta_data_by_key(id.upper())
             if not item:
                 item = self.get_jav_detail(id, wait=True)
-                save_flag
+                save_flag = True
             
             if item not in ret_medias:
                 item['img'] = item['post_img']
@@ -100,7 +100,7 @@ class Javbus:
         # 缓存
         cache = self.metaHelper.get_meta_data_by_key(id)
         
-        if not cache and cache.get('id') and len(cache.get('magnets', []) > 0):
+        if cache and cache.get('id') and len(cache.get('magnets', [])) > 0:
             log.info("【Javbus】使用Javbus缓存获取Jav详情：%s" % id)
             return cache
         
