@@ -46,7 +46,7 @@ class Javbus:
         ret_medias = []
         save_flag = False
         for id in ids: 
-            item = self.metaHelper.get_meta_data_by_key(id)
+            item = self.metaHelper.get_meta_data_by_key(id.upper())
             if not item:
                 item = self.get_jav_detail(id, wait=True)
                 save_flag
@@ -139,7 +139,7 @@ class Javbus:
             jav_info['javlib_id'] = ''
             
         self.metaHelper.update_meta_data({
-            id.lower() : jav_info
+            id.upper() : jav_info
         })
         return jav_info
 
