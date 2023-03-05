@@ -2358,7 +2358,11 @@ class WebAction:
                 client115 = Client115()
                 ids = client115.task_lists(page=page)
                 medias = Javbus().search_jav_medias_by_ids(ids=ids, page=page)
-                res_list =  __dict_javbus_info(medias)
+                res_list = [
+                    {'id': res.get('id'), 'orgid':res.get('id'), 'title':res.get('title'), 'type':'JAV', 'media_type': 'JAV', 'year': res.get('date'), 'vote': 0.0
+                    , 'image': res.get('post_img'), 'overview': res.get('title')} 
+                    for res in medias
+                ]
         elif Type == 'MISSAV':
             if SubType in ['today', 'week', 'month']:
                 res_list = __dict_javlib_info(MissavWeb().hot(SubType, page=CurrentPage))

@@ -52,7 +52,6 @@ class Javbus:
                 save_flag = True
             
             if item not in ret_medias:
-                item['img'] = item['post_img']
                 ret_medias.append(item)
         if save_flag:
             self.metaHelper.save_meta_data(True)
