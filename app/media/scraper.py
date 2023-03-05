@@ -9,14 +9,16 @@ from config import TMDB_IMAGE_W500_URL
 from app.utils import DomUtils, RequestUtils, ExceptionUtils
 from app.utils.types import MediaType
 from app.media import Media
-
+from config import Config
 
 class Scraper:
     media = None
+    _proxies = False
 
     def __init__(self):
         self.media = Media()
         self.douban = DouBan()
+        self._proxies = Config().get_proxies()
 
     def __gen_common_nfo(self,
                          tmdbinfo: dict,
@@ -315,7 +317,7 @@ class Scraper:
             return
         try:
             log.info(f"【Scraper】正在下载{itype}图片：{url} ...")
-            r = RequestUtils().get_res(url)
+            r = RequestUtils(proxies=Config().get_proxies()).get_res(url)
             if r:
                 with open(file=image_path,
                           mode="wb") as img:
