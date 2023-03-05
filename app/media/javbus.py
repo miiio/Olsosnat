@@ -97,6 +97,13 @@ class Javbus:
         """
         根据jav ID返回jav详情，带休眠
         """
+        # 缓存
+        cache = self.metaHelper.get_meta_data_by_key(id)
+        
+        if not cache and cache.get('id') and len(cache.get('magnets', []) > 0):
+            log.info("【Javbus】使用Javbus缓存获取Jav详情：%s" % id)
+            return cache
+        
         log.info("【Javbus】正在通过Javbus API查询Jav详情：%s" % id)
         # 随机休眠
         if wait:
