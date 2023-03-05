@@ -609,7 +609,7 @@ class FileTransfer:
                     # 主演名称
                     stars = ','.join([star.get('starName', '') for star in info.get('stars',[])])
                     # jav目录名称
-                    jav_dir_name = info.get('title')
+                    jav_dir_name = info.get('title')[:64]
                     if media.title in jav_dir_name:
                         jav_dir_name = jav_dir_name.replace(media.title, "[%s]" % media.title)
                     else:
