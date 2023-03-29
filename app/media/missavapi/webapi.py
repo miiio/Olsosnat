@@ -133,7 +133,7 @@ class MissavWeb(object):
         return obj
 
     @classmethod
-    @lru_cache(maxsize=256)
+    @lru_cache(maxsize=5)
     def hot(cls, type="today",page=1):
         """
         查询最想要

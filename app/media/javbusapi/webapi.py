@@ -231,7 +231,7 @@ class JavbusWeb(object):
         return obj
 
     @classmethod
-    @lru_cache(maxsize=256)
+    @lru_cache(maxsize=5)
     def search(cls, keyword, page=1, magnet='all', type='normal'):
         """
         关键字查询
@@ -243,7 +243,7 @@ class JavbusWeb(object):
     
     
     @classmethod
-    @lru_cache(maxsize=256)
+    @lru_cache(maxsize=5)
     def detail(cls, id):
         """
         影片详情
@@ -283,7 +283,7 @@ class JavbusWeb(object):
     
     
     @classmethod
-    @lru_cache(maxsize=256)
+    @lru_cache(maxsize=5)
     def actor_medias(cls, aid, page=1, magnet='all', type='normal'):
         """
         演员参与作品

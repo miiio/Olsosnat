@@ -91,7 +91,7 @@ class JavlibWeb(object):
     }
     
     @classmethod
-    @lru_cache(maxsize=256)
+    @lru_cache(maxsize=5)
     def detail_by_javid(cls, jav_id):
         """
         通过番号获取javlib影片信息
@@ -111,7 +111,7 @@ class JavlibWeb(object):
             return info if info['id'] == jav_id or jav_id in info['id'] else None
     
     @classmethod
-    @lru_cache(maxsize=256)
+    @lru_cache(maxsize=5)
     def detail(cls, vid):
         """
         影片详情
@@ -129,7 +129,7 @@ class JavlibWeb(object):
     
     
     @classmethod
-    @lru_cache(maxsize=256)
+    @lru_cache(maxsize=5)
     def search(cls, keyword, page=1, mode=1):
         """
         关键字查询
@@ -149,7 +149,7 @@ class JavlibWeb(object):
     
     
     @classmethod
-    @lru_cache(maxsize=256)
+    @lru_cache(maxsize=5)
     def mostwanted(cls, page=1, mode=1):
         """
         查询最想要
@@ -157,7 +157,7 @@ class JavlibWeb(object):
         return cls.__get_list("common_list", cls.__invoke_web("mostwanted", params=(page, mode)))
 
     @classmethod
-    @lru_cache(maxsize=256)
+    @lru_cache(maxsize=5)
     def bestrated(cls, page=1, mode=1):
         """
         查询评价最高
@@ -166,7 +166,7 @@ class JavlibWeb(object):
     
     
     @classmethod
-    @lru_cache(maxsize=256)
+    @lru_cache(maxsize=5)
     def newrelease(cls, page=1, mode=1):
         """
         查询新发行
@@ -175,7 +175,7 @@ class JavlibWeb(object):
     
     
     @classmethod
-    @lru_cache(maxsize=256)
+    @lru_cache(maxsize=5)
     def newentries(cls, page=1, mode=1):
         """
         查询新加入
